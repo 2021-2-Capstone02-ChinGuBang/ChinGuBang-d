@@ -1,0 +1,291 @@
+import { StatusBar } from 'expo-status-bar';
+import React, {useState,useEffect} from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity,TextInput, FlatList } from 'react-native';
+import search from "../iconimage/search.png"
+import { SearchBar } from 'react-native-elements';
+import schooldata from '../schooldata.json';
+
+export default function SchoolRegisterPage({navigation,route}) {
+
+  const [value1, onChangeText1] = React.useState('학교 검색');
+  const [value2, onChangeText2] = React.useState('이메일 입력');
+  const [value3, onChangeText3] = React.useState('인증번호');
+
+  const [search, setSearch] = useState('');
+  const [filteredDataSource, setFilteredDataSource] = useState([]);
+  const [masterDataSource, setMasterDataSource] = useState([]);
+
+  // 메일 변화
+  const [mail, setmail]= useState('')
+
+
+  useEffect(() => {
+   
+        setFilteredDataSource(schooldata);
+        setMasterDataSource(schooldata);
+        setmail()
+  }, []);
+
+const searchFilterFunction = (text) => {
+    // Check if searched text is not blank
+    if (text) {
+      // Inserted text is not blank
+      // Filter the masterDataSource
+      // Update FilteredDataSource
+      const newData = masterDataSource.filter(function (item) {
+        const itemData = item.name
+          ? item.name
+          : '';
+        const textData = text;
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredDataSource(newData);
+      setSearch(text);
+    } else {
+      // Inserted text is blank
+      // Update FilteredDataSource with masterDataSource
+      setFilteredDataSource(masterDataSource);
+      setSearch(text);
+    }
+  };
+
+  const ItemView = ({ item }) => {
+    return (
+      // Flat List Item
+      <Text style={styles.itemStyle} onPress={() => getItem(item)}>
+        {item.name}
+      </Text>
+    );
+  };
+
+
+  const ItemSeparatorView = () => {
+    return (
+      // Flat List Item Separator
+      <View
+        style={{
+          height: 0.5,
+          width: '100%',
+          backgroundColor: '#C8C8C8',
+        }}
+      />
+    );
+  };
+
+  const getItem = (item) => {
+    // Function for click on an item
+    alert(item.name);
+    setmail(item.mail)
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title1}>학교 선택</Text>
+      <Text style={styles.subtitle}>학교</Text>
+      <View style={styles.searchContainer}>
+        <SearchBar
+        //inputStyle={{height:30, backgroundColor: 'white'}}
+        containerStyle={{height:45, backgroundColor: 'white',borderWidth: 1}}
+        inputContainerStyle={{height:10,borderRadius: 5,backgroundColor: 'white'}}
+        //round
+            searchIcon={{ size: 23 }}
+            onChangeText={(text) => searchFilterFunction(text)}
+            onClear={(text) => searchFilterFunction('')}
+            placeholder="학교를 검색해주세요."
+            value={search}
+          />
+        
+        <FlatList
+          data={filteredDataSource}
+          keyExtractor={(item, index) => index.toString()}
+          ItemSeparatorComponent={ItemSeparatorView}
+          renderItem={ItemView}
+        />
+      </View>
+
+      <Text style={styles.title2}>학교 웹메일 인증하기</Text>
+      <View style={styles.emailContainer}>
+        <TextInput
+            style={{ width:130,height: 40, borderWidth:1,borderColor:"#E5E5E5"}}
+            onChangeText2={text => onChangeText2(text)}
+            value2={value2}
+            />
+         <View style={styles.schoolEmail}><Text style={styles.schoolEmailText}>{mail}</Text></View>
+         <TouchableOpacity style={styles.codeButton}><Text style={styles.codeButtonText}>요청</Text></TouchableOpacity>
+      </View>
+      <View style={styles.schoolregiContainer}>
+        <TextInput
+            style={{ width:270,
+              height:40,
+              borderWidth:1,
+              borderColor:"#E5E5E5"}}
+            onChangeText3={text => onChangeText3(text)}
+            value3={value3}
+            />
+         <TouchableOpacity style={styles.checkButton}><Text style={styles.checkButtonText}>확인</Text></TouchableOpacity>
+      </View>
+
+      <TouchableOpacity style={styles.schoolregiButton} onPress={()=>{navigation.navigate('회원가입')}}><Text style={styles.schoolregiButtonText}>학교 웹메일로 인증하기</Text></TouchableOpacity>
+      <StatusBar style="auto"/>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+itemStyle: {
+    padding: 10,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  title1:{ 
+    //폰트 사이즈
+    fontSize: 25,
+    //폰트 두께
+    fontWeight: '700',
+    //위 공간으로 부터 이격
+    marginTop:10,
+    marginLeft:30,
+    //왼쪽 공간으로 부터 이격
+    textAlign:'left',
+    color:"#000"
+  },
+  subtitle:{
+    //폰트 사이즈
+    fontSize:20,
+    //폰트 두께
+    fontWeight:'700',
+    //위 공간으로 부터 이격
+    marginTop:15,
+    marginLeft:30,
+    //왼쪽 공간으로 부터 이격
+    textAlign:'left',
+    color:"#797676"
+  },
+  searchContainer:{
+    width:320,
+    height:200,
+    marginLeft:30,
+    marginTop:9
+  },
+  searchImage:{
+    //marginTop:7
+  },
+  schoolPickButton:{
+    width:60,
+    height:30,
+    backgroundColor:"#fff",
+    borderColor:"#D84315",
+    borderWidth:1.5,
+    borderRadius:30,
+    marginLeft:30,
+    marginTop:9
+  },
+  title2:{
+    //폰트 사이즈
+    fontSize: 25,
+    //폰트 두께
+    fontWeight: '700',
+    //위 공간으로 부터 이격
+    marginTop:50,
+    marginLeft:30,
+    //왼쪽 공간으로 부터 이격
+    textAlign:'left',
+    color:"#000"
+  },
+  emailContainer:{
+    flexDirection:"row",
+    width:360,
+    height:40,
+    backgroundColor:"#fff",
+    borderRadius:20,
+    marginLeft:20,
+    marginTop:12
+  },
+  schoolEmail:{
+    width:130,
+    height: 40, 
+    borderWidth:1,
+    marginLeft:10,
+    borderColor:"#E5E5E5"
+  },
+  schoolEmailText:{
+    //폰트 사이즈
+    fontSize:13,
+    //폰트 두께
+    fontWeight:'600',
+    //위 공간으로 부터 이격
+    marginTop:8,
+    marginLeft:5,
+    //왼쪽 공간으로 부터 이격
+    textAlign:'left',
+    color:"#000"
+  },
+  codeButton:{
+    width:60,
+    height:30,
+    backgroundColor:"#fff",
+    borderColor:"#D84315",
+    borderWidth:1.5,
+    borderRadius:30,
+    marginLeft:9,
+    marginTop:5
+  },
+  codeButtonText:{
+    //폰트 사이즈
+    fontSize:15,
+    //폰트 두께
+    fontWeight:'600',
+    //위 공간으로 부터 이격
+    marginTop:6,
+    marginLeft:15,
+    //왼쪽 공간으로 부터 이격
+    textAlign:'left',
+    color:"#D84315"
+  },
+  schoolregiContainer:{
+    flexDirection:"row",
+    marginLeft:20,
+    marginTop:9
+  },
+  checkButton:{
+    width:60,
+    height:30,
+    backgroundColor:"#fff",
+    borderColor:"#D84315",
+    borderWidth:1.5,
+    borderRadius:30,
+    marginLeft:10,
+    marginTop:5
+  },
+  checkButtonText:{
+     //폰트 사이즈
+     fontSize:15,
+     //폰트 두께
+     fontWeight:'600',
+     //위 공간으로 부터 이격
+     marginTop:6,
+     marginLeft:15,
+     //왼쪽 공간으로 부터 이격
+     textAlign:'left',
+     color:"#D84315"
+  },
+  schoolregiButton:{
+    position: 'absolute',
+    alignSelf:"center",
+    width:320,
+    height:40,
+    backgroundColor:"#D84315",
+    borderRadius:5,
+    marginTop:600
+  },
+  schoolregiButtonText:{
+    color:"#fff",
+    fontWeight:"700",
+    fontSize:18,
+    //텍스트의 현재 위치에서의 정렬 
+    textAlign:"center",
+    marginTop:8
+  }
+})
