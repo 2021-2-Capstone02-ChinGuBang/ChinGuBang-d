@@ -52,7 +52,7 @@ let pickroom = pickroomdata.data;
             {/* 하나의 카드 영역을 나타내는 View */}
             {
             pickroom.map((content,i)=>{
-                return (<PickRoomCard content={content} key={i}/>)
+                return (<PickRoomCard content={content} key={i} navigation={navigation}/>)
             })
             }
           </View>

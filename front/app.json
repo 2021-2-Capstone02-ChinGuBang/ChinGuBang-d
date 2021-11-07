@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "friendroom-app",
-    "slug": "friendroom-app",
+    "name": "ChinGuBang",
+    "slug": "ChinGuBang",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -17,7 +17,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier":"com.capstone.ChinGuBang"
     },
     "android": {
       "adaptiveIcon": {

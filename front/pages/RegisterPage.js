@@ -1,47 +1,131 @@
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar} from 'expo-status-bar';
 import React, {useState,useEffect} from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity,TextInput } from 'react-native';
 import search from "../iconimage/search.png"
+import axios from "axios"
 
 export default function RegisterPage({navigation,route}) {
 
-  const [value1, onChangeText1] = React.useState('cau.ac.kr');
+  function isPassword(asValue) {
+    var regExp = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
+    console.log(regExp.test(asValue));
+    if(regExp.test(asValue)== true){
+      setreg(true);
+    return alert("비밀번호 OK!"); // 형식에 맞는 경우 true 리턴
+    }
+    else if(regExp.test(asValue)== false){
+      setreg(false);
+    return alert("비밀번호 형식이 틀립니다!");
+    }
+  }
+
+
+
+  const [reg, setreg] = useState(false);
+
   const [value2, onChangeText2] = React.useState('');
   const [value3, onChangeText3] = React.useState('');
+ 
+ 
+  useEffect(()=>{
+    console.log(route.params);
+  }
+   
+   
+, [])
 
-  return (
+  return reg ?(
     <View style={styles.container}>
       <Text style={styles.title}>나의 정보</Text>
       
       <View style={styles.idContainer}>
         <Text style={styles.id}>아이디</Text>
-        <TextInput
-            style={{ width:220,height: 40, borderWidth:1.5,borderColor:"#797676"}}
-            onChangeText1={text => onChangeText1(text)}
-            value1={value1}
-            />
-      </View>
+        
+        <View style={{ width:220,height: 40, borderWidth:1.5,borderColor:"#797676"}}>
+        <Text style={styles.EmailText}>{route.params.email}</Text>
+        </View>
+        </View>
       <View style={styles.pwContainer}>
         <Text style={styles.pw}>비밀번호</Text>
         <TextInput
             secureTextEntry
             style={{ width:220,height: 40, borderWidth:1.5,borderColor:"#797676"}}
-            onChangeText2={text => onChangeText2(text)}
+            onChangeText={text => onChangeText2(text)}
             value2={value2}
             />
       </View>
+
+      <Text style={styles.pwt}>비밀번호는 8~16자로 영문, 숫자, 특수문자를 최소 한가지씩 조합해주세요:)</Text>
+      <TouchableOpacity style={styles.check} onPress={()=>isPassword(value2)}>
+        <Text style={styles.checkbox}>비밀번호 확인</Text>
+      </TouchableOpacity>
+      
       <View style={styles.nicknameContainer}>
         <Text style={styles.nickname}>닉네임</Text>  
         <TextInput
             style={{ width:220,height: 40, borderWidth:1.5,borderColor:"#797676"}}
-            onChangeText3={text => onChangeText3(text)}
+            onChangeText={text => onChangeText3(text)}
             value3={value3}
             />
       </View>
-      <TouchableOpacity style={styles.regiButton}><Text style={styles.regiButtonText}>가입하기</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.regiButton} 
+        onPress={() =>axios.post(`http://54.180.160.150:5000/api/v1/auth/signup`, {
+          email : route.params.email,
+          password : value2,
+          nickname : value3,
+          university : route.params.university
+          })
+          .then(function(response)
+          {
+              console.log(response.data); 
+              alert(response.data.message+" 로그인 해주세요!");
+              navigation.navigate('로그인');
+          })
+          .catch(function (error) {console.log("오류"); alert("인증번호 인증 실패");})
+          }
+        ><Text style={styles.regiButtonText}>가입하기</Text></TouchableOpacity>
       <StatusBar style="auto" />
     </View>
-  );
+  ):(
+    <View style={styles.container}>
+      <Text style={styles.title}>나의 정보</Text>
+      
+      <View style={styles.idContainer}>
+        <Text style={styles.id}>아이디</Text>
+        
+        <View style={{ width:220,height: 40, borderWidth:1.5,borderColor:"#797676"}}>
+        <Text style={styles.EmailText}>{route.params.email}</Text>
+        </View>
+        </View>
+      <View style={styles.pwContainer}>
+        <Text style={styles.pw}>비밀번호</Text>
+        <TextInput
+            secureTextEntry
+            style={{ width:220,height: 40, borderWidth:1.5,borderColor:"#797676"}}
+            onChangeText={text => onChangeText2(text)}
+            value2={value2}
+            />
+      </View>
+
+      <Text style={styles.pwt}>비밀번호는 8~16자로 영문, 숫자, 특수문자를 최소 한가지씩 조합해주세요:)</Text>
+      <TouchableOpacity style={styles.check} onPress={()=>isPassword(value2)}>
+        <Text style={styles.checkbox}>비밀번호 확인</Text>
+      </TouchableOpacity>
+      
+      <View style={styles.nicknameContainer}>
+        <Text style={styles.nickname}>닉네임</Text>  
+        <TextInput
+            style={{ width:220,height: 40, borderWidth:1.5,borderColor:"#797676"}}
+            onChangeText={text => onChangeText3(text)}
+            value3={value3}
+            />
+      </View>
+      <TouchableOpacity style={styles.regiButton} onPress={() => alert("비밀번호를 확인해주세요!")}>
+        <Text style={styles.regiButtonText}>가입하기</Text>
+      </TouchableOpacity>
+      <StatusBar style="auto" />
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -49,7 +133,15 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
-    
+    EmailText:{
+       //폰트 사이즈
+       fontSize:16,
+       //폰트 두께
+       fontWeight:'400',
+       //위 공간으로 부터 이격
+       marginTop:7,
+       marginLeft:10,
+    },
     title:{
       //폰트 사이즈
     fontSize: 25,

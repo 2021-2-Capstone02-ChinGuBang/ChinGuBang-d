@@ -5,7 +5,7 @@ import search from "../iconimage/search.png"
 import roomdata from "../room.json"
 import RoomCard from '../components/RoomCard';
 
-export default function AllroomPage() {
+export default function AllroomPage({navigation}) {
 console.disableYellowBox = true;
 //const [state, setState] = useState([])
 
@@ -24,7 +24,7 @@ let room = roomdata.data;
             {/* 하나의 카드 영역을 나타내는 View */}
             {
             room.map((content,i)=>{
-                return (<RoomCard content={content} key={i}/>)
+                return (<RoomCard content={content} key={i} navigation={navigation}/>)
             })
             }
           </View>

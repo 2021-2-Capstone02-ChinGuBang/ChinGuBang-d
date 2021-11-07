@@ -1,13 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {useState,useEffect} from 'react';
+import React,{useState,useEffect} from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity,TextInput } from 'react-native';
 import home from "../iconimage/home.png"
+import axios from "axios"
 
 export default function LoginPage({navigation,route}) {
-
-  const [value1, onChangeText1] = React.useState('');
-  const [value2, onChangeText2] = React.useState('');
-
+//텍스트 입력 상태  
+//아이디
+const [value, onChangeText] = React.useState('');
+//비번
+const [value1, onChangeText1] = React.useState('');
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title1}>학교 인증하고</Text>
@@ -17,8 +20,8 @@ export default function LoginPage({navigation,route}) {
         <Text style={styles.idText}>ID  </Text>
         <TextInput
           style={{ marginLeft:13,width:230,height: 40}}
-          onChangeText1={text => onChangeText1(text)}
-          value1={value1}
+          onChangeText={text => onChangeText(text)}
+          value={value}
           placeholder="아이디를 입력해주세요."
         />
       </View>
@@ -27,14 +30,27 @@ export default function LoginPage({navigation,route}) {
         <TextInput
           secureTextEntry
           style={{ marginLeft:4,width:230, height: 40}}
-          onChangeText2={text => onChangeText2(text)}
-          value2={value2}
+          onChangeText={text => onChangeText1(text)}
+          value1={value1}
           placeholder="비밀번호를 입력해주세요."
         /> 
       </View>
-      <TouchableOpacity style={styles.loginButton}><Text style={styles.loginButtonText}>로그인</Text></TouchableOpacity>
+      <TouchableOpacity  onPress={() =>axios.post(`http://54.180.160.150:5000/api/v1/auth/signin`, {
+                                    email : value, 
+                                    password : value1
+                                    })
+                                    .then(function(response)
+                                    {
+                                        //console.log(response); 
+                                        console.log(response.data);
+			                                if(response.data.message =="로그인 성공")navigation.navigate('MainPage')
+                                                
+			                               })
+                                    .catch(function (error) {console.log(error); alert("로그인 실패! 아이디랑 비번 다시 입력 해주세요");})}>
+                                    <View style={styles.loginButton} >
+      <Text style={styles.loginButtonText}>로그인</Text></View></TouchableOpacity>
       <TouchableOpacity style={styles.registerButton} onPress={()=>{navigation.navigate('학교등록')}}><Text style={styles.registerButtonText}>회원가입 하러가기</Text></TouchableOpacity>
-      <TouchableOpacity style={styles.xButton}><Text style={styles.xButtonText}>인증없이 보러가기</Text></TouchableOpacity>
+      <TouchableOpacity style={styles.xButton} onPress={()=>{navigation.navigate('MainPage')}}><Text style={styles.xButtonText}>인증없이 보러가기</Text></TouchableOpacity>
       <StatusBar style="auto" />
     </View>
   );

@@ -3,7 +3,7 @@ import React, {useState,useEffect} from 'react';
 import { Keyboard,StyleSheet, Text, View, Image, TouchableOpacity,TextInput,TouchableWithoutFeedback } from 'react-native';
 import search from "../iconimage/search.png"
 
-export default function SendPage() {
+export default function SendPage({navigation}) {
 
   const [value1, onChangeText1] = React.useState('');
 
@@ -11,7 +11,8 @@ export default function SendPage() {
     <TouchableWithoutFeedback onPress={()=>{Keyboard.dismiss()}}>
     <View style={styles.container}>
      
-         <TouchableOpacity style={styles.checkButton}><Text style={styles.checkButtonText}>전송</Text></TouchableOpacity>
+         <TouchableOpacity style={styles.checkButton} onPress={()=>{navigation.navigate("쪽지함")}}><Text style={styles.checkButtonText}>전송</Text>
+         </TouchableOpacity>
          
             <TextInput
                 style = {{flexShrink:1}}

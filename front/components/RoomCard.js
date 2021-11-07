@@ -4,12 +4,12 @@ import room from "../iconimage/room.png"
 import heart from "../iconimage/heart.png"
 import {Ionicons} from "@expo/vector-icons";
 //비구조 할당 방식으로 넘긴 속성 데이터를 꺼내 사용함
-export default function RoomCard({content}) {
+export default function RoomCard({content,navigation}) {
 
     let pick = 0;//서버에서 하트를 눌렀는지 받아옴(0:안누름/1:누름), 현재는 상수처리
 
     return (
-        <TouchableOpacity >
+        <TouchableOpacity onPress={()=>{navigation.navigate('방 보기')}} >
         <View style={styles.card}>
             <View style={styles.c1}>
                 <Image resizeMode={"cover"}
@@ -33,7 +33,7 @@ export default function RoomCard({content}) {
                 <View style={styles.c4}>
                     <Text style={styles.ptext} numberOfLines={1}>{content.price}</Text>
                     <Text style={styles.dtext} numberOfLines={1}>{content.date}</Text>
-                    <Text style={styles.ftext} numberOfLines={1}>{content.floor}</Text>
+                    <Text style={styles.ftext} numberOfLines={1}>{content.floor+", "+content.area}</Text>
                     <Text style={styles.utext} numberOfLines={1}>{content.update}</Text>
                 </View>
             </View>

@@ -24,7 +24,7 @@ let room = roomdata.data;
             {/* 하나의 카드 영역을 나타내는 View */}
             {
             room.map((content,i)=>{
-                return (<MyRoomCard content={content} key={i}/>)
+                return (<MyRoomCard content={content} key={i} navigation={navigation}/>)
             })
             }
           </View>
