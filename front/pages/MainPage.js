@@ -51,8 +51,16 @@ export default function MainPage({navigation}) {
           marginRight:20,
           width:25,
           height:25,
+          flexDirection:"row"
         }} onPress={()=>{navigation.navigate('알림')}}> 
           <Image source={message}/>
+
+          <Text style={{
+              color:"#D84315",
+              fontSize:13,
+              fontWeight:"700"
+            }}>3</Text>
+            
         </TouchableOpacity>
         <TouchableOpacity style={{
           marginTop:60,
@@ -63,25 +71,7 @@ export default function MainPage({navigation}) {
         <Image source={profile}/>
         </TouchableOpacity>
       </View>
-      <View style={styles.filter}>
-        {/* <TouchableOpacity style={styles.condition}>
-          <Text style={styles.conditionText}>원룸/투룸</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.condition}>
-          <Text style={styles.conditionText}>건물 형태</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.condition}>
-          <Text style={styles.conditionText}>가격</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.condition}>
-          <Text style={styles.conditionText}>임대 기간</Text>
-        </TouchableOpacity> */}
-        <TouchableOpacity style={[styles.condition,{flexDirection:"row"}]}
-        onPress={()=>{navigation.navigate('전체 필터')}}>
-          <Image source={filter} style={{alignSelf:"center"}}/>
-          <Text style={styles.conditionText}>필터</Text>
-        </TouchableOpacity>
-      </View>
+      
       {/* 이거 없으면 글자가 지멋대로 왔다갔다 */}
       <MapView style={styles.map} 
       provider={PROVIDER_GOOGLE} 
@@ -98,12 +88,26 @@ export default function MainPage({navigation}) {
       />
  
     </MapView>
+        {/* <TouchableOpacity style={styles.condition}>
+          <Text style={styles.conditionText}>원룸/투룸</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.condition}>
+          <Text style={styles.conditionText}>건물 형태</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.condition}>
+          <Text style={styles.conditionText}>가격</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.condition}>
+          <Text style={styles.conditionText}>임대 기간</Text>
+        </TouchableOpacity> */}
+        
+      
     <TouchableOpacity style={[styles.button,
       {
         backgroundColor:colour1,
         position:'absolute',
-        right:65,
-        top:140,
+        right:140,
+        top:95,
       }]}
       onPress={()=>onPressHandler1(colour1)}>
         <Text style={styles.btnText}>단기</Text>
@@ -112,13 +116,21 @@ export default function MainPage({navigation}) {
       {
         backgroundColor:colour2,
         position:'absolute',
-        right:10,
-        top:140,
+        right:75,
+        top:95,
       }]}
       onPress={()=>onPressHandler2(colour2)}>
         <Text style={styles.btnText}>양도</Text>
       </TouchableOpacity>
       
+      <TouchableOpacity style={[styles.condition,{position:'absolute',
+        right:10,
+        top:95,width:60,flexDirection:"row",backgroundColor:"#fff",borderWidth:2,borderRadius:5,borderColor:"#D84315"}]}
+        onPress={()=>{navigation.navigate('전체 필터')}}>
+          <Image source={filter} style={{alignSelf:"center"}}/>
+          <Text style={styles.conditionText}>필터</Text>
+        </TouchableOpacity>
+        
       <TouchableOpacity style={[styles.putButton,
       {
         position:'absolute',
@@ -162,12 +174,12 @@ const styles = StyleSheet.create({
     alignSelf:"center"
   },
   button : {
-    width:50,
+    width:60,
     height:35,
     margin:5,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius:10,
+    borderRadius:5,
   },
   putButton:{
     width:160,
@@ -194,14 +206,20 @@ const styles = StyleSheet.create({
     alignSelf:"flex-start",
   },
   condition:{
-    flex:1,
-    alignContent:"center",
-    justifyContent:"center"
+    width:50,
+    height:35,
+    margin:5,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius:10,
+    //flex:1,
+    //alignContent:"center",
+    //justifyContent:"center"
   },
   conditionText:{
-    fontSize:16,
-    fontWeight:"500",
+    fontSize:15,
+    fontWeight:"700",
     alignSelf:"center",
-    color:"#000"
+    color:"#D84315"
   }
 });

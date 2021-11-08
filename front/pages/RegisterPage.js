@@ -79,9 +79,9 @@ export default function RegisterPage({navigation,route}) {
           {
               console.log(response.data); 
               alert(response.data.message+" 로그인 해주세요!");
-              navigation.navigate('로그인');
+              navigation.navigate('로그인');  
           })
-          .catch(function (error) {console.log("오류"); alert("인증번호 인증 실패");})
+          .catch(function (error) {console.log("오류"); alert("정보를 제대로 입력해주세요.");})
           }
         ><Text style={styles.regiButtonText}>가입하기</Text></TouchableOpacity>
       <StatusBar style="auto" />
@@ -142,6 +142,27 @@ const styles = StyleSheet.create({
        marginTop:7,
        marginLeft:10,
     },
+    checkbox:{
+       //폰트 사이즈
+       fontSize:13,
+       //폰트 두께
+       fontWeight:'700',
+       //위 공간으로 부터 이격
+       marginTop:5,
+       textAlign:"center",
+       color:"#D84315"
+    },
+    check:{
+      width:100,
+      height:30,
+      borderColor:"#D84315",
+      borderRadius:10,
+      borderWidth:2,
+      backgroundColor:"#fff",
+      alignSelf:"flex-end",
+      marginRight:33,
+      marginTop:5
+    },
     title:{
       //폰트 사이즈
     fontSize: 25,
@@ -191,6 +212,17 @@ const styles = StyleSheet.create({
         //왼쪽 공간으로 부터 이격
         marginRight:15,
         textAlign:'left',
+    },
+    pwt:{
+      color:"#797676",
+      //폰트 사이즈
+      fontSize:12,
+      //위 공간으로 부터 이격
+      marginTop:5,
+      marginLeft:100,
+      //왼쪽 공간으로 부터 이격
+      marginRight:35,
+      textAlign:'right',
     },
     nicknameContainer:{
       flexDirection:"row",
