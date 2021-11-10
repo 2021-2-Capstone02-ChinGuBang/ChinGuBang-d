@@ -1,8 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import React,{useState,useEffect} from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity,TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity,TextInput,Pressable ,Modal,Alert, FlatList } from 'react-native';
 import home from "../iconimage/home.png"
 import axios from "axios"
+import { SearchBar } from 'react-native-elements';
+import schooldata from '../schooldata.json';
 
 export default function LoginPage({navigation,route}) {
 //텍스트 입력 상태  
@@ -10,7 +12,78 @@ export default function LoginPage({navigation,route}) {
 const [value, onChangeText] = React.useState('');
 //비번
 const [value1, onChangeText1] = React.useState('');
+  //모달
+const [modalVisible, setModalVisible] = useState(false);
+
+const [search, setSearch] = useState('');
+const [filteredDataSource, setFilteredDataSource] = useState([]);
+const [masterDataSource, setMasterDataSource] = useState([]);
+ // 메일 변화
+ const [mail, setmail]= useState('')
+ const [name, setname]= useState('')
+
+useEffect(() => {
+   
+  setFilteredDataSource(schooldata);
+  setMasterDataSource(schooldata);
   
+}, []);
+
+const searchFilterFunction = (text) => {
+  // Check if searched text is not blank
+  if (text) {
+    // Inserted text is not blank
+    // Filter the masterDataSource
+    // Update FilteredDataSource
+    const newData = masterDataSource.filter(function (item) {
+      const itemData = item.name
+        ? item.name
+        : '';
+      const textData = text;
+      return itemData.indexOf(textData) > -1;
+    });
+    setFilteredDataSource(newData);
+    setSearch(text);
+  } else {
+    // Inserted text is blank
+    // Update FilteredDataSource with masterDataSource
+    setFilteredDataSource(masterDataSource);
+    setSearch(text);
+  }
+};
+
+const ItemView = ({ item }) => {
+  return (
+    // Flat List Item
+    <Text style={styles.itemStyle} onPress={() => getItem(item)}>
+      {item.name}
+    </Text>
+  );
+};
+
+
+const ItemSeparatorView = () => {
+  return (
+    // Flat List Item Separator
+    <View
+      style={{
+        height: 0.5,
+        width: '100%',
+        backgroundColor: '#C8C8C8',
+      }}
+    />
+  );
+};
+
+const getItem = (item) => {
+  // Function for click on an item
+  alert(item.name);
+  setname(item.name)
+  setmail(item.mail)
+  navigation.navigate('MainPage'); 
+  setModalVisible(!modalVisible); 
+};
+
   return (
     <View style={styles.container}>
       <Text style={styles.title1}>학교 인증하고</Text>
@@ -50,7 +123,52 @@ const [value1, onChangeText1] = React.useState('');
                                     <View style={styles.loginButton} >
       <Text style={styles.loginButtonText}>로그인</Text></View></TouchableOpacity>
       <TouchableOpacity style={styles.registerButton} onPress={()=>{navigation.navigate('학교등록')}}><Text style={styles.registerButtonText}>회원가입 하러가기</Text></TouchableOpacity>
-      <TouchableOpacity style={styles.xButton} onPress={()=>{navigation.navigate('MainPage')}}><Text style={styles.xButtonText}>인증없이 보러가기</Text></TouchableOpacity>
+      <View style={styles.centeredView}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+          <Text style={{color:"#D84315",fontSize: 15, fontWeight: '700',}}>집구경하고 싶은 학교를 골라주세요!</Text>
+            <View style={styles.searchContainer}>
+              <SearchBar
+              //inputStyle={{height:30, backgroundColor: 'white'}}
+              containerStyle={{height:45, backgroundColor: 'white',borderWidth: 1}}
+              inputContainerStyle={{height:10,borderRadius: 5,backgroundColor: 'white'}}
+              //round
+                  searchIcon={{ size: 23 }}
+                  onChangeText={(text) => searchFilterFunction(text)}
+                  onClear={(text) => searchFilterFunction('')}
+                  placeholder="학교를 검색해주세요."
+                  value={search}
+                />
+              
+              <FlatList
+                data={filteredDataSource}
+                keyExtractor={(item, index) => index.toString()}
+                ItemSeparatorComponent={ItemSeparatorView}
+                renderItem={ItemView}
+              />
+            </View>
+            <Text style={{color:"#a5a5a5",fontSize: 11, fontWeight: '500',marginLeft:8,marginRight:8}}>* 인증없이 보러가기는 매물 확인만 가능하며, 채팅기능, 찜기능을 이용하려면 학교인증 후 로그인 해주세요:) *</Text>
+        
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={styles.textStyle}>창 닫기</Text>
+            </Pressable>
+              </View>
+        </View>
+      </Modal>
+      <Pressable style={[styles.xButton, styles.xButton]} onPress={() => setModalVisible(true)}>
+        <Text style={styles.xButtonText}>인증없이 보러가기</Text>
+      </Pressable>
+      </View>
       <StatusBar style="auto" />
     </View>
   );
@@ -175,5 +293,60 @@ const styles = StyleSheet.create({
     fontWeight:"500",
     //텍스트의 현재 위치에서의 정렬 
     textAlign:"center",
-  }
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    width:"90%",
+    height:330,
+    margin:20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 15,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    marginTop:10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  searchContainer:{
+    alignSelf:"center",
+    width:300,
+    height:200,
+    //marginLeft:30,
+    marginTop:9
+  },
+  itemStyle: {
+    padding: 10,
+    fontSize: 14,fontWeight: '600',color:"#797676"
+  },
 });
