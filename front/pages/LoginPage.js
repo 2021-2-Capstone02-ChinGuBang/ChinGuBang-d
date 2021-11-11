@@ -80,8 +80,18 @@ const getItem = (item) => {
   alert(item.name);
   setname(item.name)
   setmail(item.mail)
-  navigation.navigate('MainPage'); 
+  axios.post(`http://54.180.160.150:5000/api/v1/auth/public`, {
+          university : item.name
+          })
+          .then(function(response)
+          {
+              console.log(response.data); 
+              navigation.navigate('MainPage'); 
+          })
+          .catch(function (error) {console.log("오류"); })
+  
   setModalVisible(!modalVisible); 
+  
 };
 
   return (
