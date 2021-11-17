@@ -27,7 +27,7 @@ const [area,setarea] = useState("")
 const [floor,setfloor] = useState("")
 const [createdAt,setcreatedAt] = useState("")
 const [roomID,setroomID] = useState("")
-const [uploader,setuploader] = useState("")
+const [opponentID,setopponentID] = useState("")
 const [ut,setut] = useState("")
 const [room,setroom] = useState("")
 //준비 상태
@@ -41,7 +41,7 @@ const isFocused = useIsFocused()
 useEffect(()=>{
 
  
-      console.log(route.params);
+      console.log(route.params.content);
       setut(route.params.user_t);
       setchat(route.params.content.data.messages);
       console.log(route.params.content.data.room);
@@ -56,7 +56,7 @@ useEffect(()=>{
       setfloor(route.params.content.data.room.information.floor);
       setcreatedAt(route.params.content.data.room.createdAt);
       setroomID(route.params.content.data.room.roomID)
-      setuploader(route.params.content.data.room.uploader)
+      setopponentID(route.params.content.data.opponentID)
       setroom(route.params.content.data.room.photo.main)
 },[])
 
@@ -95,7 +95,7 @@ useEffect(()=>{
                 })
                 }
             </ScrollView>
-            <TouchableOpacity style={{position: 'absolute', right: 25, bottom: 70}} onPress={()=>{navigation.navigate('쪽지 보내기',{user_id:ut, roomID:roomID , rcID:uploader})}}>
+            <TouchableOpacity style={{position: 'absolute', right: 25, bottom: 70}} onPress={()=>{navigation.navigate('쪽지 보내기',{user_id:ut, roomID:roomID , rcID:opponentID})}}>
                 <Image resizeMode={"cover"}
                           style={styles.sendImage} source={send}/>
             </TouchableOpacity>
