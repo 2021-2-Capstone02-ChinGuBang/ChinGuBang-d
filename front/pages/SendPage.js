@@ -1,25 +1,59 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState,useEffect} from 'react';
-import { Keyboard,StyleSheet, Text, View, Image, TouchableOpacity,TextInput,TouchableWithoutFeedback } from 'react-native';
+import { Keyboard,StyleSheet, Text, View, Image, TouchableOpacity,TextInput,TouchableWithoutFeedback,Alert } from 'react-native';
 import search from "../iconimage/search.png"
+import axios from 'axios';
 
-export default function SendPage({navigation}) {
+export default function SendPage({navigation, route}) {
 
   const [value1, onChangeText1] = React.useState('');
+  const [ut,setut] = useState("")
+  const [rcID,setrcID] = useState("")
+  const [roomID,setroomID] = useState("")
+  useEffect(()=>{
+    console.log(route.params);
+    setut(route.params.user_id);
+    setrcID(route.params.rcID);
+    setroomID(route.params.roomID);
+  }
+, [])
 
+let form ={
+  
+  receiverID :rcID,
+  content : value1
+  
+}
   return (
     <TouchableWithoutFeedback onPress={()=>{Keyboard.dismiss()}}>
     <View style={styles.container}>
      
-         <TouchableOpacity style={styles.checkButton} onPress={()=>{navigation.navigate("쪽지함")}}><Text style={styles.checkButtonText}>전송</Text>
+         <TouchableOpacity style={styles.checkButton} onPress={()=>{
+           axios.post(`http://54.180.160.150:5000/api/v1/message/`+roomID,form,{
+            headers: {
+              Authorization : ut,
+              "Content-Type": `application/json`
+            }
+          })
+          .then(function(response){
+            console.log(response);
+            Alert.alert("쪽지가 전송되었습니다.");
+            navigation.navigate("쪽지함",{user_t:ut,content:response.data });
+          })
+          .catch(function(error) {
+           
+            console.log("error");
+            //Alert.alert(JSON.stringify(error.response.status))
+          })
+           }}><Text style={styles.checkButtonText}>전송</Text>
          </TouchableOpacity>
          
             <TextInput
                 style = {{flexShrink:1}}
                 multiline ={true}
                 style={{ marginTop:0, marginLeft:15,width:"90%"}}
-                onChangeText1={text => onChangeText1(text)}
-                value1={value1}
+                onChangeText={text => onChangeText1(text)}
+                value={value1}
                 placeholder="내용을 입력해주세요"
                 placeholderTextColor="#797676"
                 />

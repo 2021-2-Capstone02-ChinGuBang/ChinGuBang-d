@@ -2,13 +2,14 @@ import React from "react"
 import {View,Text,Image,StyleSheet,TouchableOpacity} from "react-native";
 
 //비구조 할당 방식으로 넘긴 속성 데이터를 꺼내 사용함
-export default function ChatCard({content}) {
+export default function ChatCard({content,route}) {
+  
     return (
        
         <View style={styles.card}>
             
-          <Text style={styles.ftext} numberOfLines={1}>{content.form}</Text>
-          <Text style={styles.ttext} numberOfLines={1}>{content.text}</Text>
+          <Text style={styles.ftext} numberOfLines={1}>{content.messageType}</Text>
+          <Text style={styles.ttext} numberOfLines={1}>{content.content}</Text>
             
         </View>
         

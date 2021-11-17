@@ -1,5 +1,5 @@
-import React,{useState} from 'react';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import React,{useState,useEffect} from 'react';
+import MapView, { Circle, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions, Image, TouchableOpacity } from 'react-native';
 
 import Confirm from '../components/Confirm'
@@ -8,9 +8,18 @@ import filter from '../assets/filter.png'
 import homeplus from '../assets/homeplus.png'
 import message from '../assets/message.png'
 import profile from '../assets/profile.png'
+import axios from 'axios';
 
 
-export default function MainPage({navigation}) {
+export default function MainPage({navigation,route}) {
+  //유저 토큰
+  const [ut,setut]=useState("")
+  useEffect(()=>{
+    console.log(route.params);
+    console.log(route.params.u_token);
+    setut(route.params.u_token)
+    console.log(ut)
+  },[])
   const [colour1,setColours1]=useState("#C4C4C4")
   const onPressHandler1=color=>{
     if (color==="#D84315"){
@@ -52,7 +61,23 @@ export default function MainPage({navigation}) {
           width:25,
           height:25,
           flexDirection:"row"
-        }} onPress={()=>{navigation.navigate('알림')}}> 
+        }} 
+        onPress={()=>
+          axios.get('http://54.180.160.150:5000/api/v1/message',{
+            headers:{
+                Authorization : ut
+            }
+          })
+          .then((response)=>{
+            //console.log(response);
+            navigation.navigate("알림",{content:response, u_token : ut})
+          })
+          .catch((error)=>{
+           
+            console.log("Error");
+            //Alert.alert(JSON.stringify(error.response.status))
+          })
+          }> 
           <Image source={message}/>
 
           <Text style={{
@@ -78,16 +103,17 @@ export default function MainPage({navigation}) {
       initialRegion={{
         latitude: 37.50519,
         longitude: 126.95709,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+        latitudeDelta: 0.00922,
+        longitudeDelta: 0.00421,
       }}>
-      <Marker
-        coordinate={{latitude: 37.50519, longitude: 126.95709}}
-        title="this is a marker"
-        description="this is a marker example"
-      />
- 
-    </MapView>
+
+        <Marker
+          coordinate={{latitude: 37.50519, longitude: 126.95709}}
+          title="2021-11-04 ~"
+          description="2022-01-05"
+        />
+  
+      </MapView>
         {/* <TouchableOpacity style={styles.condition}>
           <Text style={styles.conditionText}>원룸/투룸</Text>
         </TouchableOpacity>
@@ -126,7 +152,7 @@ export default function MainPage({navigation}) {
       <TouchableOpacity style={[styles.condition,{position:'absolute',
         right:10,
         top:95,width:60,flexDirection:"row",backgroundColor:"#fff",borderWidth:2,borderRadius:5,borderColor:"#D84315"}]}
-        onPress={()=>{navigation.navigate('전체 필터')}}>
+        onPress={()=>{navigation.navigate('전체 필터',{u_token:ut})}}>
           <Image source={filter} style={{alignSelf:"center"}}/>
           <Text style={styles.conditionText}>필터</Text>
         </TouchableOpacity>
@@ -138,7 +164,7 @@ export default function MainPage({navigation}) {
         bottom:80,
         flexDirection:"row"
       }]}
-      onPress={()=>{navigation.navigate('방 내놓기')}}>
+      onPress={()=>{navigation.navigate('방 내놓기', {u_token : ut})}}>
         <Image source={homeplus} style={{
           flex:2,
           alignSelf:"center",
@@ -152,7 +178,40 @@ export default function MainPage({navigation}) {
               flex:5,
         }}>방 내놓기</Text>
       </TouchableOpacity>
-    <Confirm content={"모든 방 보기"} naviPage={"모든 방 보기"} navigation={navigation} alert={0} ></Confirm>
+      <TouchableOpacity style = {styles.cButton} onPress={()=>
+        axios.get(`http://54.180.160.150:5000/api/v1/room`,{
+          headers: {
+            Authorization : ut
+          }
+        })
+        .then((response)=>{
+          //console.log(response.data);
+          navigation.navigate("모든 방 보기",{content:response.data, u_token : ut})
+        })
+        .catch((error)=>{
+          if (error.response) {
+            // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
+            //console.log(error.response.data);
+            //console.log(error.response.status);
+            //console.log(error.response.headers);
+          }
+          else if (error.request) {
+            // 요청이 이루어 졌으나 응답을 받지 못했습니다.
+            // `error.request`는 브라우저의 XMLHttpRequest 인스턴스 또는
+            // Node.js의 http.ClientRequest 인스턴스입니다.
+            console.log(error.request);
+          }
+          else {
+            // 오류를 발생시킨 요청을 설정하는 중에 문제가 발생했습니다.
+            //console.log('Error', error.message);
+          }
+          //console.log(error.config);
+          console.log("ErrorErrorgggErrorError");
+          //Alert.alert(JSON.stringify(error.response.status))
+        })
+        }>
+        <Text style = {styles.cText}>모든 방 보기</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -180,6 +239,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius:5,
+  },
+  cButton : {
+    width:"100%",
+    height:72.5,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor:"#D84315"
+  },
+  cText : {
+    color:"#FFF",
+    fontWeight:"700",
+    fontSize:20,
   },
   putButton:{
     width:160,

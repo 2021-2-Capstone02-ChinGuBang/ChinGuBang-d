@@ -86,7 +86,8 @@ const getItem = (item) => {
           .then(function(response)
           {
               console.log(response.data); 
-              navigation.navigate('MainPage'); 
+              console.log(response.data.token); 
+              navigation.navigate('MainPage',{u_token : response.data.token}); 
           })
           .catch(function (error) {console.log("오류"); })
   
@@ -126,9 +127,10 @@ const getItem = (item) => {
                                     {
                                         //console.log(response); 
                                         console.log(response.data);
-			                                if(response.data.message =="로그인 성공")navigation.navigate('MainPage')
+                                        console.log(response.data.token);
+                                         if(response.data.message =="로그인 성공")navigation.navigate('MainPage',{u_token : response.data.token})
                                                 
-			                               })
+                                        })
                                     .catch(function (error) {console.log(error); alert("로그인 실패! 아이디랑 비번 다시 입력 해주세요");})}>
                                     <View style={styles.loginButton} >
       <Text style={styles.loginButtonText}>로그인</Text></View></TouchableOpacity>

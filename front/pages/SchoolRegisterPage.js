@@ -392,7 +392,7 @@ itemStyle: {
     height:40,
     backgroundColor:"#D84315",
     borderRadius:5,
-    marginTop:600
+    bottom:50
   },
   schoolregiButtonText:{
     color:"#fff",

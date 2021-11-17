@@ -1,46 +1,86 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState,useEffect} from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity,TextInput, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity,TextInput, ScrollView,LogBox } from 'react-native';
 import search from "../iconimage/search.png"
 import notidata from "../noti.json"
 import chatdata from "../chat.json"
 import ChatCard from '../components/ChatCard';
-import room from "../iconimage/room.png"
+//import room from "../iconimage/room.png"
 import send from "../iconimage/send.png"
+import Loading from '../components/LoadingPage';
+import axios from 'axios';
+import { useIsFocused } from '@react-navigation/native';
 
-export default function ChattingPage({content,navigation}) {
+export default function ChattingPage({content,navigation,route}) {
+  LogBox.ignoreAllLogs;
 console.disableYellowBox = true;
-//const [state, setState] = useState([])
+//채팅방 정보들을 저장하고 있을 상태
+const [chat, setchat] = useState([])
+const [category,setcategory] = useState("")
+const [roomType,setroomType] = useState("")
+const [rentType,setrentType] = useState("")
+const [deposit,setdeposit] = useState("")
+const [monthly,setmonthly] = useState("")
+const [endDate,setendDate] = useState("")
+const [startDate,setstartDate] = useState("")
+const [area,setarea] = useState("")
+const [floor,setfloor] = useState("")
+const [createdAt,setcreatedAt] = useState("")
+const [roomID,setroomID] = useState("")
+const [uploader,setuploader] = useState("")
+const [ut,setut] = useState("")
+const [room,setroom] = useState("")
+//준비 상태
+//const [ready,setReady] = useState(true)
+ 
 
-//useEffect(()=>{
-   // setState(notidata)
-//},[])
 
-//let room= roomdata.data;
-//서버에서 정보 받아와야 함
-let noti = notidata.data;
-//서버에서 정보 받아와야 함
-let chat = chatdata.data;
+//컨텐츠 새로고침,데이터 갱신
+const isFocused = useIsFocused()
+
+useEffect(()=>{
+
+ 
+      console.log(route.params);
+      setut(route.params.user_t);
+      setchat(route.params.content.data.messages);
+      console.log(route.params.content.data.room);
+      setcategory(route.params.content.data.room.type.category);
+      setroomType(route.params.content.data.room.type.roomType);
+      setrentType(route.params.content.data.room.type.rentType);
+      setdeposit(route.params.content.data.room.price.deposit);
+      setmonthly(route.params.content.data.room.price.monthly);
+      setendDate(route.params.content.data.room.rentPeriod.endDate);
+      setstartDate(route.params.content.data.room.rentPeriod.startDate);
+      setarea(route.params.content.data.room.information.area);
+      setfloor(route.params.content.data.room.information.floor);
+      setcreatedAt(route.params.content.data.room.createdAt);
+      setroomID(route.params.content.data.room.roomID)
+      setuploader(route.params.content.data.room.uploader)
+      setroom(route.params.content.data.room.photo.main)
+},[])
+
   return (
+   
     <View style={styles.container}>
 
           <View style={styles.cardC}>
                 <View style={styles.c1}>
                     <Image resizeMode={"cover"}
-                    style={styles.roomImage} source={room}/>
+                    style={styles.roomImage} source={{uri:room}}/>
                 </View>
 
                 <View style={styles.c2}>
                     <View style={styles.c3}>
-                        <View style={styles.kind}><Text style={styles.kindtext}>aaaa</Text></View>
-                        <View style={styles.method}><Text style={styles.methodtext}>aaaa</Text></View>
+                        <View style={styles.kind}><Text style={styles.kindtext}>{category}</Text></View>
+                        <View style={styles.method}><Text style={styles.methodtext}>{roomType}</Text></View>
 
                     </View>
                     <View style={styles.c4}>
-                        <Text style={styles.ptext} numberOfLines={1}>aaaa</Text>
-                        <Text style={styles.dtext} numberOfLines={1}>aaaa</Text>
-                        <Text style={styles.ftext} numberOfLines={1}>aaaa</Text>
-                        <Text style={styles.utext} numberOfLines={1}>aaaa</Text>
+                        <Text style={styles.ptext} numberOfLines={1}>{rentType} {monthly}만원/ 보증금 {deposit}만원</Text>
+                        <Text style={styles.dtext} numberOfLines={1}>{startDate}~{endDate}</Text>
+                        <Text style={styles.ftext} numberOfLines={1}>{area}평,{floor}층</Text>
+                        <Text style={styles.utext} numberOfLines={1}>{createdAt}</Text>
                     </View>
                 </View>
           </View>
@@ -55,7 +95,7 @@ let chat = chatdata.data;
                 })
                 }
             </ScrollView>
-            <TouchableOpacity style={{position: 'absolute', right: 25, bottom: 70}} onPress={()=>{navigation.navigate('쪽지 보내기')}}>
+            <TouchableOpacity style={{position: 'absolute', right: 25, bottom: 70}} onPress={()=>{navigation.navigate('쪽지 보내기',{user_id:ut, roomID:roomID , rcID:uploader})}}>
                 <Image resizeMode={"cover"}
                           style={styles.sendImage} source={send}/>
             </TouchableOpacity>
@@ -64,6 +104,7 @@ let chat = chatdata.data;
 
       <StatusBar style="auto" />
     </View>
+   
   );
 }
 

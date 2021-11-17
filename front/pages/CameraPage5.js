@@ -30,8 +30,8 @@ export default function CameraPage5({navigation}) {
 			// make sure a image was taken:
 			if (!image.cancelled) {
         navigation.navigate('방 내놓기',{"image5":image.uri, "base5":image.base64})
-        console.log(image.uri)
-        console.log(image.base64)
+        // console.log(image.uri)
+        // console.log(image.base64)
         alert("사진이 등록되었습니다!");
 			}
 		}
@@ -54,7 +54,7 @@ export default function CameraPage5({navigation}) {
            // make sure a image was taken:
            if (!pickimage.cancelled) {
             navigation.navigate('방 내놓기',{"image5":pickimage.uri, "base5":pickimage.base64})
-            console.log(JSON.stringify(pickimage))
+            //console.log(JSON.stringify(pickimage))
             alert("사진이 등록되었습니다!");
            }
         }

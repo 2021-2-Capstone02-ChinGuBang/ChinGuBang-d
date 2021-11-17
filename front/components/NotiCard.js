@@ -1,15 +1,51 @@
-import React from "react"
+import React, {useState,useEffect} from 'react';
 import {View,Text,Image,StyleSheet,TouchableOpacity} from "react-native";
 import bell from "../iconimage/bell.png"
+import axios from 'axios';
 //비구조 할당 방식으로 넘긴 속성 데이터를 꺼내 사용함
-export default function NotiCard({content,navigation}) {
+export default function NotiCard({content,navigation,ut}) {
+ 
+    console.log(ut);
+ 
     return (
-        <TouchableOpacity onPress={()=>{navigation.navigate('쪽지함')}}>
+        <TouchableOpacity 
+        onPress={()=>
+          axios.get(`http://54.180.160.150:5000/api/v1/message/`+ content.messageRoomID,{
+            headers: {
+              Authorization : ut
+            }
+          })
+          .then((response)=>{
+            //console.log(response.data);
+            navigation.navigate("쪽지함",{content:response.data,user_t:ut})
+          })
+          .catch((error)=>{
+            if (error.response) {
+              // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
+              //console.log(error.response.data);
+              //console.log(error.response.status);
+              //console.log(error.response.headers);
+            }
+            else if (error.request) {
+              // 요청이 이루어 졌으나 응답을 받지 못했습니다.
+              // `error.request`는 브라우저의 XMLHttpRequest 인스턴스 또는
+              // Node.js의 http.ClientRequest 인스턴스입니다.
+              console.log(error.request);
+            }
+            else {
+              // 오류를 발생시킨 요청을 설정하는 중에 문제가 발생했습니다.
+              //console.log('Error', error.message);
+            }
+            //console.log(error.config);
+            console.log("ErrorErrorgggErrorError");
+            //Alert.alert(JSON.stringify(error.response.status))
+          })
+          }>
         <View style={styles.card}>
             
             <Image resizeMode={"cover"}
             style={styles.bellImage} source={bell}/>
-            <Text style={styles.text} numberOfLines={1}>{content.name} 님이 쪽지를 보냈어요!</Text>
+            <Text style={styles.text} numberOfLines={1}>'{content.nickname}' 님과의 쪽지방이에요!</Text>
             
         </View>
         </TouchableOpacity>

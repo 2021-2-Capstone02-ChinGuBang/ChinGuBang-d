@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
   },
   image:{
     margin:15,
+    height:23,
     flex:1,
     resizeMode:"stretch"
   },

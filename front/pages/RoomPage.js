@@ -1,7 +1,10 @@
 import React,{useState,useEffect} from 'react';
 import { TouchableOpacity,ScrollView,StyleSheet, Text,Image, View, TextInput, Button } from 'react-native';
+//import axios from "axios"
+//import { Buffer } from "buffer";
+import base64 from 'base-64'
 
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Circle, PROVIDER_GOOGLE } from 'react-native-maps';
 import Gallery from 'react-native-image-gallery';
 
 import OptionUntouch from '../components/OptionUntouch'
@@ -20,35 +23,114 @@ import tv from "../assets/tv.png"
 import cctv from "../assets/cctv.png"
 import parking from "../assets/parking.png"
 import elevator from "../assets/elevator.png"
+import stove from "../assets/stove.png"
+
 import roomImage from "../assets/roomImage.png"
 
-import roomdata from "../room.json"
-
-export default function RoomPage({navigation}) {
-    let room = roomdata.data[0];
-    let option = room.option;
-    const [items, setItems] = useState([]);
-    let images = [roomImage,bed,desk]
-    useEffect(() => {
-      let items = Array.apply(null, Array(60)).map((v, i) => {
+export default function RoomPage({navigation, route}) {
+    const[long,setLong] = useState(0)
+    const[lat,setLat] = useState(0)
+    const[ut,setUt]=useState('')
+    useEffect(()=>{
+        setUt(route.params.u_t)
+        console.log("ut는 이거다",route.params.u_t)  
+        console.log(ut)
+        // fetch('http://maps.google.com/maps/api/geocode/json?address=' + route.params.content.post).then(function(res){
+        //     setLong(res.result.geometry.location.lng);
+        //     setLat(res.result.geometry.location.lat)
+        // })
+        // .catch(function(error) {
+        //     if (error.response) {
+        //       // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
+        //       console.log(error.response.data);
+        //       console.log(error.response.status);
+        //       //console.log(error.response.headers);
+        //     }
+        //     else if (error.request) {
+        //       // 요청이 이루어 졌으나 응답을 받지 못했습니다.
+        //       // `error.request`는 브라우저의 XMLHttpRequest 인스턴스 또는
+        //       // Node.js의 http.ClientRequest 인스턴스입니다.
+        //       console.log(error.request);
+        //     }
+        //     else {
+        //       // 오류를 발생시킨 요청을 설정하는 중에 문제가 발생했습니다.
+        //       console.log('Error', error.message);
+        //     }
+        //     console.log(error.config);
+        //     //Alert.alert(JSON.stringify(error.response.status))
+        //   });
+        
+    },[])
+    const [room, setRoom] = useState(route.params.content)
+    const [option,setOption] = useState(room.data.options)
+    let photo = [
+        // `data:image/jpg;base64,${room.data.photo.main}`,
+        // `data:image/jpg;base64,${room.data.photo.restroom}`,
+        // `data:image/jpg;base64,${room.data.photo.kitchen}`,
+        // `data:image/jpg;base64,${room.data.photo.photo1}`,
+        // `data:image/jpg;base64,${room.data.photo.photo2}`,
+        // base64.decode(room.data.photo.main), 
+        // base64.decode(room.data.photo.restroom), 
+        // base64.decode(room.data.photo.kitchen), 
+        // base64.decode(room.data.photo.photo1), 
+        // base64.decode(room.data.photo.photo2)
+        room.data.photo.main,
+        room.data.photo.restroom,
+        room.data.photo.kitchen,
+        room.data.photo.photo1,
+        room.data.photo.photo2
+    ]
+    let items = Array.apply(null, Array(5)).map((v, i) => {
         //Loop to make image array to show in slider
         return {
           source: {
-            uri: 'http://placehold.it/200x200?text=' + (i + 1),
+            uri: photo[i]
           },
         };
       });
-      setItems(items);
-    }, []);
-
-
+    console.log(items)
+    // useEffect(()=>{
+    //     axios.get(`http://54.180.160.150:5000/api/v1/room/24`,{
+    //         headers:{
+    //             Authorization:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJJRCI6MjR9LCJpYXQiOjE2MzY0NDE2MzUsImV4cCI6MTYzNzY1MTIzNX0.1XGUeQ7tQ23nQcT3iLAtVFoEO_govS9cHED71LRYbCc",
+    //         }
+    //     })
+    //     .then((response)=>{
+    //         console.log(typeof(response))
+    //         console.log(response.data.data.conditions.gender);
+    //         setRoom(response.data)
+    //         console.log(room.data.conditions.gender)
+    //         console.log("뭐야 이거")
+    //         setOption(room.data.options)
+    //         //setOption(room.option)
+    //     })
+    //     .catch((error)=>{
+    //       if (error.response) {
+    //         // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
+    //         console.log(error.response.data);
+    //         console.log(error.response.status);
+    //         //console.log(error.response.headers);
+    //       }
+    //       else if (error.request) {
+    //         // 요청이 이루어 졌으나 응답을 받지 못했습니다.
+    //         // `error.request`는 브라우저의 XMLHttpRequest 인스턴스 또는
+    //         // Node.js의 http.ClientRequest 인스턴스입니다.
+    //         console.log(error.request);
+    //       }
+    //       else {
+    //         // 오류를 발생시킨 요청을 설정하는 중에 문제가 발생했습니다.
+    //         console.log('Error', error.message);
+    //       }
+    //       console.log(error.config);
+    //       //Alert.alert(JSON.stringify(error.response.status))
+    //     })
+    // },[])
     return(
         <ScrollView style={styles.container}>
             <View style = {styles.components}>
+                {/* <View style={styles.mainImage}/> */}
             <Gallery
                 style={[styles.mainImage,{ flex: 1, backgroundColor: 'black', }]}
-                initialPage="1"
-                //initial image to show
                 images={items}
             />
                 {/* <Image source={roomImage} style={styles.mainImage}></Image> */}
@@ -56,10 +138,10 @@ export default function RoomPage({navigation}) {
             <View style = {styles.components}>
                 <View style={styles.badgeContainer}>            
                     <View style={styles.kind}>
-                        <Text style={styles.kindtext}>{room.kind}</Text>
+                        <Text style={styles.kindtext}>{room.data.type.roomType}</Text>
                     </View>
                         <View style={styles.kind}>
-                            <Text style={styles.kindtext}>{room.method}</Text>
+                            <Text style={styles.kindtext}>{room.data.type.category}</Text>
                     </View>
                     <View style={{flex:4}}></View>
                 </View>
@@ -68,57 +150,57 @@ export default function RoomPage({navigation}) {
                     fontWeight:"700",
                     marginLeft:5,
                     marginTop:20,
-                }}>{room.price}</Text>
+                }}>{room.data.type.rentType} {room.data.price.monthly}만원 / 보증금 {room.data.price.deposit}만원</Text>
             </View>
             <View style={styles.components}>
-                <Text style={styles.detailText} multiline={true}>{room.detail}</Text>
+                <Text style={styles.detailText} multiline={true}>{room.data.information.description}</Text>
             </View>
             <View style={styles.components}>
                 <Text style={styles.subTitle}>방 정보</Text>
                 <View style={[styles.info,{borderTopWidth:1}]}>
                     <Text style={styles.infoComp}>주소</Text>
-                    <Text style={styles.infoData}>{room.address}</Text>
+                    <Text style={styles.infoData}>{room.data.information.query}</Text>
                 </View>
                 <View style={styles.info}>
                     <Text style={styles.infoComp}>전용 면적</Text>
-                    <Text style={styles.infoData}>{room.area}</Text>
+                    <Text style={styles.infoData}>{room.data.information.area} 평</Text>
                 </View>
                 <View style={styles.info}>
                     <Text style={styles.infoComp}>임대 기간</Text>
-                    <Text style={styles.infoData}>{room.date}</Text>
+                    <Text style={styles.infoData}>{room.data.rentPeriod.startDate.toString().slice(0,10)} ~ {room.data.rentPeriod.endDate.toString().slice(0,10)}</Text>
                 </View>
                 <View style={styles.info}>
                     <Text style={styles.infoComp}>층수</Text>
-                    <Text style={styles.infoData}>{room.floor}</Text>
+                    <Text style={styles.infoData}>{room.data.information.floor} 층</Text>
                 </View>
                 <View style={styles.info}>
                     <Text style={styles.infoComp}>건축년도</Text>
-                    <Text style={styles.infoData}>{room.constYear+"년"}</Text>
+                    <Text style={styles.infoData}>{room.data.information.construction+" 년"}</Text>
                 </View>
             </View>
             <View style={styles.components}>
                 <Text style={styles.subTitle}>가격 정보</Text>
                 <View style={[styles.info,{borderTopWidth:1}]}>
                     <Text style={styles.infoComp}>보증금</Text>
-                    <Text style={styles.infoData}>{room.deposit+" 만원"}</Text>
+                    <Text style={styles.infoData}>{room.data.price.deposit+" 만원"}</Text>
                 </View>
                 <View style={styles.info}>
                     <Text style={styles.infoComp}>월세</Text>
-                    <Text style={styles.infoData}>{room.monthly+" 만원"}</Text>
+                    <Text style={styles.infoData}>{room.data.price.monthly+" 만원"}</Text>
                 </View>
                 <View style={styles.info}>
                     <Text style={styles.infoComp}>관리비</Text>
-                    <Text style={styles.infoData}>{room.admin+" 만원"}</Text>
+                    <Text style={styles.infoData}>{room.data.price.control+" 만원"}</Text>
                 </View>
             </View>
             <View style={styles.components}>
                 <Text style={styles.subTitle}>조건</Text>
                 <View style={styles.badgeContainer}>            
                     <View style={styles.kind}>
-                        <Text style={styles.kindtext}>{room.conditionSex}</Text>
+                        <Text style={styles.kindtext}>{room.data.conditions.gender}</Text>
                     </View>
                     <View style={styles.kind}>
-                            <Text style={styles.kindtext}>{room.conditionCigar}</Text>
+                            <Text style={styles.kindtext}>{room.data.conditions.smoking}</Text>
                     </View>
                     <View style={{flex:4}}></View>
                 </View>
@@ -131,15 +213,15 @@ export default function RoomPage({navigation}) {
                     <OptionUntouch content="책상" img={desk} set={option.desk}></OptionUntouch>
                 </View>
                 <View style = {styles.twoBtnContainer}>
-                    <OptionUntouch content="냉장고" img={fridge} set={option.fridge}></OptionUntouch>
-                    <OptionUntouch content="에어컨" img={airconditioner} set={option.aircon}></OptionUntouch>
+                    <OptionUntouch content="냉장고" img={fridge} set={option.refrigerator}></OptionUntouch>
+                    <OptionUntouch content="에어컨" img={airconditioner} set={option.airconditioner}></OptionUntouch>
                 </View>
                 <View style = {styles.twoBtnContainer}>
                     <OptionUntouch content="의자" img={chair} set={option.chair}></OptionUntouch>
                     <OptionUntouch content="옷장" img={closet}set={option.closet}></OptionUntouch>
                 </View>
                 <View style = {styles.twoBtnContainer}>
-                    <OptionUntouch content="세탁기" img={washer} set={option.washer}></OptionUntouch>
+                    <OptionUntouch content="세탁기" img={washer} set={option.washingmachine}></OptionUntouch>
                     <OptionUntouch content="전자레인지" img={microwave} set={option.microwave}></OptionUntouch>
                 </View>
                 <View style = {styles.twoBtnContainer}>
@@ -150,9 +232,9 @@ export default function RoomPage({navigation}) {
                     <OptionUntouch content="복도 CCTV" img={cctv} set={option.cctv}></OptionUntouch>
                     <OptionUntouch content="주차 가능" img={parking} set={option.parking}></OptionUntouch>
                 </View>
-                <View style = {[styles.twoBtnContainer,{marginLeft:25}]}>
+                <View style = {styles.twoBtnContainer}>
                     <OptionUntouch content="엘리베이터" img={elevator} set={option.elevator}></OptionUntouch>
-                    <View style={{flex:1}}></View>
+                    <OptionUntouch content="가스레인지" img={stove} set={option.induction}></OptionUntouch>
                 </View>
                 </View>
             </View>
@@ -162,20 +244,26 @@ export default function RoomPage({navigation}) {
                     fontSize:15,
                     fontWeight:"500",
                     marginLeft:20,
-                }}>{room.address}</Text>
+                }}>{room.data.information.query}</Text>
                 <MapView style={styles.map} 
                     provider={PROVIDER_GOOGLE} 
                     initialRegion={{
-                        latitude: 37.50519,
-                        longitude: 126.95709,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }}>
-                    <Marker
-                        coordinate={{latitude: 37.50519, longitude: 126.95709}}
-                        title="this is a marker"
-                        description="this is a marker example"
-                    />
+                        latitude: 37.50647515483056, 
+                        longitude: 126.9555879609704,
+                        latitudeDelta: 0.0025,
+                        longitudeDelta: 0.002,
+                }}>
+                    <Circle 
+                        center={{
+                            latitude: 37.50647515483056, 
+                            longitude: 126.9555879609704
+                        }}
+                        radius = {50}
+                        strokeColor = "#D84315"
+                        strokeWidth = {5}
+                        // fillColor = "#D84315">
+                        >
+                    </Circle>
                 </MapView>
             </View>
             <View style={styles.components}>
@@ -184,7 +272,13 @@ export default function RoomPage({navigation}) {
                     <Image source={roomImage} style={styles.mainImage}></Image>
                 </TouchableOpacity>
             </View>
-            <Confirm content={"쪽지 보내기"} naviPage={"쪽지 보내기"} navigation={navigation} alert={0}></Confirm>
+            <TouchableOpacity style = {styles.cButton} onPress={()=>
+            {   
+                console.log("ut 확인용",ut)
+                navigation.navigate("쪽지 보내기",{user_id:ut, roomID:room.data.roomID, rcID:room.data.user.userID})
+            }}>
+                <Text style = {styles.cText}>쪽지 보내기</Text>
+            </TouchableOpacity>        
         </ScrollView>
     );
 }
@@ -268,6 +362,18 @@ const styles = StyleSheet.create({
         height: 350,
         marginTop:20,
         marginBottom:20,
+    },
+    cButton : {
+        width:"100%",
+        height:72.5,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor:"#D84315"
+    },
+        cText : {
+        color:"#FFF",
+        fontWeight:"700",
+        fontSize:20,
     },
 
 })
