@@ -8,11 +8,13 @@ import PutOutRoom from '../pages/PutOutRoom';
 import PostCode from '../pages/PostCode';
 import RoomPage from '../pages/RoomPage';
 import EditRoom from '../pages/EditRoom';
+
 import CameraPage1 from '../pages/CameraPage1';
 import CameraPage2 from '../pages/CameraPage2';
 import CameraPage3 from '../pages/CameraPage3';
 import CameraPage4 from '../pages/CameraPage4';
 import CameraPage5 from '../pages/CameraPage5';
+
 import Chatting from '../pages/ChattingPage';
 import Allroom from '../pages/AllroomPage';
 import Login from '../pages/LoginPage';
@@ -58,17 +60,15 @@ const StackNavigator = () =>{
         <Stack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }}/>
         <Stack.Screen name="전체 필터" component={FilterPage}/>
         <Stack.Screen name="방 내놓기" component={PutOutRoom}/>
+        <Stack.Screen name="주소 검색" component={PostCode}/>
+        <Stack.Screen name="방 보기" component={RoomPage}/>
+        <Stack.Screen name="방 수정하기" component={EditRoom}/>
+
         <Stack.Screen name="대표사진" component={CameraPage1}/>
         <Stack.Screen name="화장실" component={CameraPage2}/>
         <Stack.Screen name="부엌" component={CameraPage3}/>
         <Stack.Screen name="사진1" component={CameraPage4}/>
         <Stack.Screen name="사진2" component={CameraPage5}/>
-
-        <Stack.Screen name="주소 검색" component={PostCode}/>
-        <Stack.Screen name="방 보기" component={RoomPage}/>
-        <Stack.Screen name="방 수정하기" component={EditRoom}/>
-
-
 
     </Stack.Navigator>
     )

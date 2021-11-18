@@ -38,12 +38,13 @@ const [room,setroom] = useState("")
 //컨텐츠 새로고침,데이터 갱신
 const isFocused = useIsFocused()
 
-useEffect(()=>{
 
- 
+useEffect(() => {
+  if (isFocused) { 
+    console.log("Focused")
+      setchat(route.params.content.data.messages);}
       console.log(route.params.content);
       setut(route.params.user_t);
-      setchat(route.params.content.data.messages);
       console.log(route.params.content.data.room);
       setcategory(route.params.content.data.room.type.category);
       setroomType(route.params.content.data.room.type.roomType);
@@ -58,7 +59,7 @@ useEffect(()=>{
       setroomID(route.params.content.data.room.roomID)
       setopponentID(route.params.content.data.opponentID)
       setroom(route.params.content.data.room.photo.main)
-},[])
+},[isFocused])
 
   return (
    

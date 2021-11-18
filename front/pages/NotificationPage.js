@@ -13,12 +13,16 @@ const [noti, setNoti] = useState([])
 //유저 토큰
 const [ut,setut]=useState("")
 
+//컨텐츠 새로고침,데이터 갱신
+const isFocused = useIsFocused()
+
 useEffect(()=>{
-  //console.log(route.params.content)
+  if (isFocused) { 
+    console.log("Focused")
+    setNoti(route.params.content.data.data.messages)}
   console.log(route.params.u_token)
-  setNoti(route.params.content.data.data.messages)
   setut(route.params.u_token)
-  },[])
+  },[isFocused])
 
 
   return (
