@@ -1,7 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import MapView, { Circle, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions, Image, TouchableOpacity } from 'react-native';
-import * as Notifications from 'expo-notifications';
 import Confirm from '../components/Confirm'
 import Home from '../assets/CapstoneHome.png'
 import filter from '../assets/filter.png'
@@ -10,7 +9,6 @@ import message from '../assets/message.png'
 import profile from '../assets/profile.png'
 import axios from 'axios';
 import Loading from '../components/Loading'
-
 export default function MainPage({navigation,route}) {
   //유저 토큰
   let mApiKey = 'AIzaSyA-TBtTOWILp1wUABnai9adbbJMgcPP008'
@@ -18,39 +16,8 @@ export default function MainPage({navigation,route}) {
   const [ut,setut]=useState("")
   let pinCol=["#C4C4C4","#D84315"]
 
-  async function registerForPushNotificationsAsync() {
-    let token;
-    if (Constants.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!');
-        return;
-      }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log("여건가,,,?"+token);
-    } else {
-      alert('Must use physical device for Push Notifications');
-    }
-  
-    if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-      });
-    }
-  
-    return token;
-  }
-
   useEffect(()=>{
-    registerForPushNotificationsAsync();
+    
     setTimeout(()=>{
       let i = 0;
       setut(route.params.u_token)

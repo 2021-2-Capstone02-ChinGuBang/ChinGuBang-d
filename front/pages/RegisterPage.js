@@ -3,70 +3,18 @@ import React, {useState,useEffect} from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity,TextInput } from 'react-native';
 import search from "../iconimage/search.png"
 import axios from "axios"
-import Constants from 'expo-constants';
-import * as Notifications from 'expo-notifications';
 
 export default function RegisterPage({navigation,route}) {
-
-  function isPassword(asValue) {
-    var regExp = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
-    console.log(regExp.test(asValue));
-    if(regExp.test(asValue)== true){
-      setreg(true);
-    return alert("비밀번호 OK!"); // 형식에 맞는 경우 true 리턴
-    }
-    else if(regExp.test(asValue)== false){
-      setreg(false);
-    return alert("비밀번호 형식이 틀립니다!");
-    }
-  }
-
 
 
   const [reg, setreg] = useState(false);
 
   const [value2, onChangeText2] = React.useState('');
   const [value3, onChangeText3] = React.useState('');
-  const [expot,setexpot]=useState("")
-
-  async function registerForPushNotificationsAsync() {
-    let token;
-
-    if (Constants.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!');
-        return;
-      }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log("엑스포토큰?"+token);
-      setexpot(token);
-    } else {
-      alert('Must use physical device for Push Notifications');
-    }
-  
-    if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-      });
-    }
-  
-    return token;
-  }
-
-
+ 
   useEffect(()=>{
     console.log(route.params);
-    registerForPushNotificationsAsync();
-  }
+     }
    
    
 , [])
@@ -110,8 +58,7 @@ export default function RegisterPage({navigation,route}) {
           email : route.params.email,
           password : value2,
           nickname : value3,
-          university : route.params.university,
-          //expo_token :expot
+          university : route.params.university
           })
           .then(function(response)
           {

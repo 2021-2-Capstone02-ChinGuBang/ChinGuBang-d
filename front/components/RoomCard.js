@@ -16,7 +16,6 @@ export default function RoomCard({content,navigation,ut}) {
     const [like,setLike] = useState(content.isLike)
     let main = content.photo.main
 
-    const testut='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJJRCI6MjR9LCJpYXQiOjE2MzY5Mzc4MDUsImV4cCI6MTYzODE0NzQwNX0.IEueIisyXwDRfz14nQpVIQra8z5X23eHYGcLZrgqFBs'
     useEffect(()=>{
       console.log("#############################################")
       console.log(content)
@@ -107,18 +106,22 @@ export default function RoomCard({content,navigation,ut}) {
                 <View style={styles.c3}>
                     <View style={styles.kind}><Text style={styles.kindtext}>{content.type.roomType}</Text></View>
                     <View style={styles.method}><Text style={styles.methodtext}>{content.type.category}</Text></View>
-                    <TouchableOpacity onPress={()=>axios.post(`http://54.180.160.150:5000/api/v1/room/like/61`,{
-                                                                  headers:{
-                                                                      Authorization:testut
-                                                                  }
-                                                                }).then(function(res){
-                                                                  //setLike(false);
-                                                                  Alert.alert(res.message)
-                                                                })
-                                                                .catch(function(res){
-                                                                  Alert.alert(res.message)
-                                                                })
-                                                                }>
+                    <TouchableOpacity style={styles.checkButton} onPress={()=>{
+                        axios.post(`http://54.180.160.150:5000/api/v1/room/like/`+content.roomID,null,{
+                              headers:{
+                                 Authorization: u_t,
+                                 }
+                                })
+                              .then(function(response){
+                                console.log(response);
+                                Alert.alert("좋아요");
+                              })
+                              .catch(function(error) {
+                              
+                                console.log(error);
+                                //Alert.alert(JSON.stringify(error.response.status))
+                              })
+                              }}>
                       <View style={styles.heartImage}>
                             <Ionicons
                               name={like ? "ios-heart" : "ios-heart-outline"}
