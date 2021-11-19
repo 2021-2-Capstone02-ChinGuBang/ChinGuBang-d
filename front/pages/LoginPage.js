@@ -19,8 +19,10 @@ const [search, setSearch] = useState('');
 const [filteredDataSource, setFilteredDataSource] = useState([]);
 const [masterDataSource, setMasterDataSource] = useState([]);
  // 메일 변화
- const [mail, setmail]= useState('')
- const [name, setname]= useState('')
+const [mail, setmail]= useState('')
+const [name, setname]= useState('')
+
+
 
 useEffect(() => {
    
@@ -85,9 +87,10 @@ const getItem = (item) => {
           })
           .then(function(response)
           {
-              console.log(response.data); 
-              console.log(response.data.token); 
-              navigation.navigate('MainPage',{u_token : response.data.token}); 
+            console.log(response.data); 
+            console.log(response.data.token); 
+            
+            navigation.navigate('MainPage',{u_token : response.data.token}); 
           })
           .catch(function (error) {console.log("오류"); })
   
@@ -128,10 +131,19 @@ const getItem = (item) => {
                                         //console.log(response); 
                                         console.log(response.data);
                                         console.log(response.data.token);
-                                         if(response.data.message =="로그인 성공")navigation.navigate('MainPage',{u_token : response.data.token})
-                                                
+                                         if(response.data.message =="로그인 성공"){
+                                           axios.get(`http://54.180.160.150:5000/api/v1/main`,{
+                                             headers:{
+                                               Authorization : response.data.token
+                                             }
+                                           })
+                                           .then(function(res){
+                                             console.log(res)
+                                             navigation.navigate('MainPage',{u_token : response.data.token, rooms: res.data.data.rooms})
+                                           })
+                                         }
                                         })
-                                    .catch(function (error) {console.log(error); alert("로그인 실패! 아이디랑 비번 다시 입력 해주세요");})}>
+                                    .catch(function (error) {console.log(error); alert("로그인 실패! 아이디랑 비밀번호를 다시 입력 해주세요");})}>
                                     <View style={styles.loginButton} >
       <Text style={styles.loginButtonText}>로그인</Text></View></TouchableOpacity>
       <TouchableOpacity style={styles.registerButton} onPress={()=>{navigation.navigate('학교등록')}}><Text style={styles.registerButtonText}>회원가입 하러가기</Text></TouchableOpacity>

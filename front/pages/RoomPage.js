@@ -1,8 +1,7 @@
 import React,{useState,useEffect} from 'react';
-import { TouchableOpacity,ScrollView,StyleSheet, Text,Image, View, TextInput, Button } from 'react-native';
+import { TouchableOpacity,ScrollView,StyleSheet, Text,Image, View, TextInput, Alert } from 'react-native';
 //import axios from "axios"
 //import { Buffer } from "buffer";
-import base64 from 'base-64'
 
 import MapView, { Circle, PROVIDER_GOOGLE } from 'react-native-maps';
 import Gallery from 'react-native-image-gallery';
@@ -26,18 +25,23 @@ import elevator from "../assets/elevator.png"
 import stove from "../assets/stove.png"
 
 import roomImage from "../assets/roomImage.png"
+import axios from 'axios';
 
 export default function RoomPage({navigation, route}) {
-    const[long,setLong] = useState(0)
-    const[lat,setLat] = useState(0)
+    let mApiKey = 'AIzaSyA-TBtTOWILp1wUABnai9adbbJMgcPP008'
+    const[long,setLong] = useState(route.params.location.lng)
+    const[lat,setLat] = useState(route.params.location.lat)
     const[ut,setUt]=useState('')
     useEffect(()=>{
         setUt(route.params.u_t)
-        console.log("ut는 이거다",route.params.u_t)  
+        console.log("ut는 이거다",route.params.u_t)
         console.log(ut)
-        // fetch('http://maps.google.com/maps/api/geocode/json?address=' + route.params.content.post).then(function(res){
-        //     setLong(res.result.geometry.location.lng);
-        //     setLat(res.result.geometry.location.lat)
+        // axios.get('https://maps.google.com/maps/api/geocode/json?address=' + route.params.content.data.information.post + '&key=' + mApiKey + '&language=ko')
+        // .then(function(res){
+        //     console.log(res.data.results[0].geometry.location)
+        //     setLong(res.data.results[0].geometry.location.lng);
+        //     setLat(res.data.results[0].geometry.location.lat);
+            
         // })
         // .catch(function(error) {
         //     if (error.response) {
@@ -248,15 +252,17 @@ export default function RoomPage({navigation, route}) {
                 <MapView style={styles.map} 
                     provider={PROVIDER_GOOGLE} 
                     initialRegion={{
-                        latitude: 37.50647515483056, 
-                        longitude: 126.9555879609704,
+                        latitude: lat, 
+                        longitude: long,
                         latitudeDelta: 0.0025,
                         longitudeDelta: 0.002,
-                }}>
+                }}
+                scrollEnabled={false}
+                zoomEnabled={false}>
                     <Circle 
                         center={{
-                            latitude: 37.50647515483056, 
-                            longitude: 126.9555879609704
+                            latitude: lat, 
+                            longitude: long,
                         }}
                         radius = {50}
                         strokeColor = "#D84315"

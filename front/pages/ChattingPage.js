@@ -7,7 +7,7 @@ import chatdata from "../chat.json"
 import ChatCard from '../components/ChatCard';
 //import room from "../iconimage/room.png"
 import send from "../iconimage/send.png"
-import Loading from '../components/LoadingPage';
+//import Loading from '../components/LoadingPage';
 import axios from 'axios';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -71,7 +71,7 @@ useEffect(() => {
                     style={styles.roomImage} source={{uri:room}}/>
                 </View>
 
-                <View style={styles.c2}>
+                <View style={styles.c2}>  
                     <View style={styles.c3}>
                         <View style={styles.kind}><Text style={styles.kindtext}>{category}</Text></View>
                         <View style={styles.method}><Text style={styles.methodtext}>{roomType}</Text></View>

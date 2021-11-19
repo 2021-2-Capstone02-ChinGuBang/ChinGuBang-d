@@ -22,11 +22,8 @@ useEffect(()=>{
 
 //서버에서 정보 받아와야 함
 const [room,setRoom] = useState(route.params.content.data.rooms);
-const [roomID,setRoomID] = useState(route.params.content.data.rooms.roomID);
-
 console.log("넘어오긴 하나,,,")
 console.log(route.params.content)
-
   return (
     <View style={styles.container}>
       <ScrollView>

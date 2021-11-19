@@ -20,9 +20,9 @@ useEffect(()=>{
   if (isFocused) { 
     console.log("Focused")
     setNoti(route.params.content.data.data.messages)}
-  console.log(route.params.u_token)
-  setut(route.params.u_token)
-  },[isFocused])
+    console.log(route.params.u_token)
+    setut(route.params.u_token)
+  },[isFocused,noti])
 
 
   return (
@@ -45,11 +45,12 @@ useEffect(()=>{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#f8f8f8',
     },
     cardC: {
-        marginTop:10,
-        marginLeft:10
+        //borderRadius:10,
+        padding:3,
+       // backgroundColor: '#fff',
       }
     
     

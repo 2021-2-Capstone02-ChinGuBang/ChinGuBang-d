@@ -3,6 +3,8 @@ import React, {useState,useEffect} from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity,TextInput } from 'react-native';
 import search from "../iconimage/search.png"
 import axios from "axios"
+import Constants from 'expo-constants';
+import * as Notifications from 'expo-notifications';
 
 export default function RegisterPage({navigation,route}) {
 
@@ -25,10 +27,45 @@ export default function RegisterPage({navigation,route}) {
 
   const [value2, onChangeText2] = React.useState('');
   const [value3, onChangeText3] = React.useState('');
- 
- 
+  const [expot,setexpot]=useState("")
+
+  async function registerForPushNotificationsAsync() {
+    let token;
+
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log("엑스포토큰?"+token);
+      setexpot(token);
+    } else {
+      alert('Must use physical device for Push Notifications');
+    }
+  
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+  
+    return token;
+  }
+
+
   useEffect(()=>{
     console.log(route.params);
+    registerForPushNotificationsAsync();
   }
    
    
@@ -73,7 +110,8 @@ export default function RegisterPage({navigation,route}) {
           email : route.params.email,
           password : value2,
           nickname : value3,
-          university : route.params.university
+          university : route.params.university,
+          //expo_token :expot
           })
           .then(function(response)
           {

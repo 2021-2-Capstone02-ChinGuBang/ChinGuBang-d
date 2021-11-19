@@ -4,7 +4,7 @@ import {View,Text,Image,StyleSheet,TouchableOpacity} from "react-native";
 //비구조 할당 방식으로 넘긴 속성 데이터를 꺼내 사용함
 export default function ChatCard({content,route}) {
   
-    return (
+    return content.messageType=="보낸 쪽지"?(
        
         <View style={styles.card}>
             
@@ -13,7 +13,16 @@ export default function ChatCard({content,route}) {
             
         </View>
         
-        )
+        ):(
+       
+          <View style={styles.card}>
+              
+            <Text style={styles.atext} numberOfLines={1}>{content.messageType}</Text>
+            <Text style={styles.ttext} numberOfLines={1}>{content.content}</Text>
+              
+          </View>
+          
+          )
 }
 
 const styles = StyleSheet.create({
@@ -40,6 +49,18 @@ const styles = StyleSheet.create({
     //왼쪽 공간으로 부터 이격
     textAlign:'left',
     color:"#D84315"
+  },
+  atext: {
+    //폰트 사이즈
+    fontSize: 13,
+    //폰트 두께
+    fontWeight: '700',
+    //위 공간으로 부터 이격
+    marginTop:9,
+    marginLeft:8,
+    //왼쪽 공간으로 부터 이격
+    textAlign:'left',
+    color:"#FFA012"
   },
   ttext: {
     //폰트 사이즈

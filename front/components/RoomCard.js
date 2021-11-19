@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from "react"
-import {View,Text,Image,StyleSheet,TouchableOpacity} from "react-native";
+import {View,Text,Image,StyleSheet,TouchableOpacity,Alert} from "react-native";
 import axios from 'axios';
 import base64 from 'base-64'
 
@@ -9,21 +9,18 @@ import {Ionicons} from "@expo/vector-icons";
 import { unstable_batchedUpdates } from "react-dom";
 //비구조 할당 방식으로 넘긴 속성 데이터를 꺼내 사용함
 export default function RoomCard({content,navigation,ut}) {
-
+  let mApiKey = 'AIzaSyA-TBtTOWILp1wUABnai9adbbJMgcPP008'
     const [kind,setKind]=useState("월세")
-    const [pick,setPick]=useState(0)
     const [date,setDate]=useState("")
     const [u_t,setUt] = useState("")
+    const [like,setLike] = useState(content.isLike)
     let main = content.photo.main
+
+    const testut='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJJRCI6MjR9LCJpYXQiOjE2MzY5Mzc4MDUsImV4cCI6MTYzODE0NzQwNX0.IEueIisyXwDRfz14nQpVIQra8z5X23eHYGcLZrgqFBs'
     useEffect(()=>{
       console.log("#############################################")
       console.log(content)
       console.log("#############################################")
-      if(content.likes.length==0){
-        setPick(0);
-      }else{
-        setPick(1);
-      }
 
       if(content.type.rentType=="월세"){
         setKind(content.type.rentType+" "+content.price.monthly+"만원/"+"보증금"+content.price.deposit+"만원")
@@ -50,7 +47,32 @@ export default function RoomCard({content,navigation,ut}) {
         .then((response)=>{
             console.log(response.data);
             console.log("이거 맞나")
-            navigation.navigate('방 보기',{content: response.data, u_t:u_t})
+            axios.get('https://maps.google.com/maps/api/geocode/json?address=' + response.data.data.information.post + '&key=' + mApiKey + '&language=ko')
+            .then(function(res){
+                console.log(res.data.results[0].geometry.location)
+                navigation.navigate('방 보기',{content: response.data, u_t:u_t, location: res.data.results[0].geometry.location})
+            })
+            .catch(function(error) {
+                if (error.response) {
+                  // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
+                  console.log(error.response.data);
+                  console.log(error.response.status);
+                  //console.log(error.response.headers);
+                }
+                else if (error.request) {
+                  // 요청이 이루어 졌으나 응답을 받지 못했습니다.
+                  // `error.request`는 브라우저의 XMLHttpRequest 인스턴스 또는
+                  // Node.js의 http.ClientRequest 인스턴스입니다.
+                  console.log(error.request);
+                }
+                else {
+                  // 오류를 발생시킨 요청을 설정하는 중에 문제가 발생했습니다.
+                  console.log('Error', error.message);
+                }
+                console.log(error.config);
+                //Alert.alert(JSON.stringify(error.response.status))
+              });
+            
         })
         .catch((error)=>{
           if (error.response) {
@@ -85,10 +107,21 @@ export default function RoomCard({content,navigation,ut}) {
                 <View style={styles.c3}>
                     <View style={styles.kind}><Text style={styles.kindtext}>{content.type.roomType}</Text></View>
                     <View style={styles.method}><Text style={styles.methodtext}>{content.type.category}</Text></View>
-                    <TouchableOpacity style={{width:35,height:35}}>
+                    <TouchableOpacity onPress={()=>axios.post(`http://54.180.160.150:5000/api/v1/room/like/61`,{
+                                                                  headers:{
+                                                                      Authorization:testut
+                                                                  }
+                                                                }).then(function(res){
+                                                                  //setLike(false);
+                                                                  Alert.alert(res.message)
+                                                                })
+                                                                .catch(function(res){
+                                                                  Alert.alert(res.message)
+                                                                })
+                                                                }>
                       <View style={styles.heartImage}>
                             <Ionicons
-                              name={pick==1 ? "ios-heart" : "ios-heart-outline"}
+                              name={like ? "ios-heart" : "ios-heart-outline"}
                               color="#D84315"
                               size={25}
                             />

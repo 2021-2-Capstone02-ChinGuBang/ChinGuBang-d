@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import MapView, { Circle, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions, Image, TouchableOpacity } from 'react-native';
-
+import * as Notifications from 'expo-notifications';
 import Confirm from '../components/Confirm'
 import Home from '../assets/CapstoneHome.png'
 import filter from '../assets/filter.png'
@@ -9,16 +9,62 @@ import homeplus from '../assets/homeplus.png'
 import message from '../assets/message.png'
 import profile from '../assets/profile.png'
 import axios from 'axios';
-
+import Loading from '../components/Loading'
 
 export default function MainPage({navigation,route}) {
   //유저 토큰
+  let mApiKey = 'AIzaSyA-TBtTOWILp1wUABnai9adbbJMgcPP008'
+
   const [ut,setut]=useState("")
+  let pinCol=["#C4C4C4","#D84315"]
+
+  async function registerForPushNotificationsAsync() {
+    let token;
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log("여건가,,,?"+token);
+    } else {
+      alert('Must use physical device for Push Notifications');
+    }
+  
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+  
+    return token;
+  }
+
   useEffect(()=>{
-    console.log(route.params);
-    console.log(route.params.u_token);
-    setut(route.params.u_token)
-    console.log(ut)
+    registerForPushNotificationsAsync();
+    setTimeout(()=>{
+      let i = 0;
+      setut(route.params.u_token)
+      setRoom(route.params.rooms)
+      console.log("########################################")
+      findCoords(route.params.rooms)
+      console.log("안되는건가")
+      console.log(coords)
+      setReady(false)
+      
+    },1000)
+    console.log("##################COORDS######################")
+    console.log(coords)
+
   },[])
   const [colour1,setColours1]=useState("#C4C4C4")
   const onPressHandler1=color=>{
@@ -38,7 +84,47 @@ export default function MainPage({navigation,route}) {
       setColours2("#D84315")
     }
   }
-  return (
+  const [rooms,setRoom]=useState([])
+  const [ready,setReady] = useState(true)
+  const [coords,setCoords] = useState([])
+
+  const findCoords=(rooms)=>{
+    let coord = coords.slice()
+    let i = 0
+    for(i=0;i<rooms.length;i++){
+    axios.get('https://maps.google.com/maps/api/geocode/json?address=' + rooms[i].information.post + '&key=' + mApiKey + '&language=ko')
+    .then(function(res){
+        coord.push(res.data.results[0].geometry.location)
+
+    })
+    .catch(function(error) {
+        if (error.response) {
+          // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
+          console.log(error.response.data);
+          console.log(error.response.status);
+          //console.log(error.response.headers);
+        }
+        else if (error.request) {
+          // 요청이 이루어 졌으나 응답을 받지 못했습니다.
+          // `error.request`는 브라우저의 XMLHttpRequest 인스턴스 또는
+          // Node.js의 http.ClientRequest 인스턴스입니다.
+          console.log(error.request);
+        }
+        else {
+          // 오류를 발생시킨 요청을 설정하는 중에 문제가 발생했습니다.
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+
+        //Alert.alert(JSON.stringify(error.response.status))
+      });
+    }
+    setCoords(coord)
+    console.log("이거임")
+    console.log(coord)
+  }
+
+  return ready ? <Loading/> : (
     <View style={styles.container}>
       <View style={styles.top}>
         <Image style={{
@@ -61,8 +147,7 @@ export default function MainPage({navigation,route}) {
           width:25,
           height:25,
           flexDirection:"row"
-        }} 
-        onPress={()=>
+        }}  onPress={()=>
           axios.get('http://54.180.160.150:5000/api/v1/message',{
             headers:{
                 Authorization : ut
@@ -96,8 +181,6 @@ export default function MainPage({navigation,route}) {
         <Image source={profile}/>
         </TouchableOpacity>
       </View>
-      
-      {/* 이거 없으면 글자가 지멋대로 왔다갔다 */}
       <MapView style={styles.map} 
       provider={PROVIDER_GOOGLE} 
       initialRegion={{
@@ -106,27 +189,52 @@ export default function MainPage({navigation,route}) {
         latitudeDelta: 0.00922,
         longitudeDelta: 0.00421,
       }}>
-
-        <Marker
-          coordinate={{latitude: 37.50519, longitude: 126.95709}}
-          title="2021-11-04 ~"
-          description="2022-01-05"
-        />
+        {
+          rooms.map((content,i)=>{
+            return(
+            <Marker
+              //coordinate={{latitude: coords[i].lat, longitude: coords[i].lng}}
+              title="2021-11-04 ~"
+              description="2022-01-05"
+              //pinColor={pinCol[i%2]}
+              onPress={()=>
+                axios.get(`http://54.180.160.150:5000/api/v1/room`,{
+                  headers: {
+                    Authorization : ut
+                  }
+                })
+                .then((response)=>{
+                  //console.log(response.data);
+                  navigation.navigate("모든 방 보기",{content:response.data, u_token : ut})
+                })
+                .catch((error)=>{
+                  if (error.response) {
+                    // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
+                    //console.log(error.response.data);
+                    //console.log(error.response.status);
+                    //console.log(error.response.headers);
+                  }
+                  else if (error.request) {
+                    // 요청이 이루어 졌으나 응답을 받지 못했습니다.
+                    // `error.request`는 브라우저의 XMLHttpRequest 인스턴스 또는
+                    // Node.js의 http.ClientRequest 인스턴스입니다.
+                    console.log(error.request);
+                  }
+                  else {
+                    // 오류를 발생시킨 요청을 설정하는 중에 문제가 발생했습니다.
+                    //console.log('Error', error.message);
+                  }
+                  //console.log(error.config);
+                  console.log("ErrorErrorgggErrorError");
+                  //Alert.alert(JSON.stringify(error.response.status))
+                })
+                }
+            />
+            )
+          })
+        }
   
-      </MapView>
-        {/* <TouchableOpacity style={styles.condition}>
-          <Text style={styles.conditionText}>원룸/투룸</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.condition}>
-          <Text style={styles.conditionText}>건물 형태</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.condition}>
-          <Text style={styles.conditionText}>가격</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.condition}>
-          <Text style={styles.conditionText}>임대 기간</Text>
-        </TouchableOpacity> */}
-        
+      </MapView>        
       
     <TouchableOpacity style={[styles.button,
       {

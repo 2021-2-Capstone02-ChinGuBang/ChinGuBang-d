@@ -9,6 +9,8 @@ import OptionButton from '../components/OptionButton'
 import Postcode from '@actbase/react-daum-postcode';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+import Loading from '../components/Loading'
+
 import search from '../assets/search.png'
 import bed from "../assets/bed.png"
 import desk from "../assets/desk.png"
@@ -723,6 +725,7 @@ export default function PutOutRoom({navigation, route}) {
         </TouchableOpacity>
       </View>
       <TouchableOpacity style = {styles.cButton} onPress={()=>
+      
       axios.post(`http://54.180.160.150:5000/api/v1/room`,form,{
         headers: {
           Authorization : ut,
