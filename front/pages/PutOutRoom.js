@@ -3,7 +3,6 @@ import { TouchableOpacity,ScrollView,StyleSheet, Text,Image, View, TextInput, Bu
 
 import axios from 'axios';
 import { useIsFocused } from '@react-navigation/native';
-import base64 from 'base-64'
 import OptionButton from '../components/OptionButton'
 
 import Postcode from '@actbase/react-daum-postcode';
@@ -34,6 +33,7 @@ import cimg from "../iconimage/cimg.png"
 
 
 export default function PutOutRoom({navigation, route}) {
+  let mApiKey = 'AIzaSyA-TBtTOWILp1wUABnai9adbbJMgcPP008'
 
   const [img1,setImg1] = useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl93ASaa2NdIwZutsY6l82DpqvKCI5B43XBQ&usqp=CAU")
   const [img2,setImg2] = useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl93ASaa2NdIwZutsY6l82DpqvKCI5B43XBQ&usqp=CAU")
@@ -42,20 +42,20 @@ export default function PutOutRoom({navigation, route}) {
   const [img5,setImg5] = useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl93ASaa2NdIwZutsY6l82DpqvKCI5B43XBQ&usqp=CAU")
   
   //유저 토큰
-  const [ut,setut]=useState("")
+  const [ut,setut]=useState(route.params.u_token)
   useEffect(()=>{
     console.log(route.params);
     console.log(route.params.u_token);
-    setut(route.params.u_token)
+    //setut(route.params.u_token)
   },[])
   
   let form = new FormData();
 
-  const [base1,setBase1] = useState("")
-  const [base2,setBase2] = useState("")
-  const [base3,setBase3] = useState("")
-  const [base4,setBase4] = useState("")
-  const [base5,setBase5] = useState("")
+  // const [base1,setBase1] = useState("")
+  // const [base2,setBase2] = useState("")
+  // const [base3,setBase3] = useState("")
+  // const [base4,setBase4] = useState("")
+  // const [base5,setBase5] = useState("")
   const [post,setPost] = useState('주소')
   //컨텐츠 새로고침,데이터 갱신
   const isFocused = useIsFocused()
@@ -65,18 +65,18 @@ export default function PutOutRoom({navigation, route}) {
       console.log("Focused")
       if(route.params != undefined){
       if(route.params.image1 != undefined){
-        console.log(route.params.image1)
+        //console.log(route.params.image1)
         setImg1(route.params.image1)
         setFile1({
           uri: route.params.image1,
           type: 'image/jpg',
           name: 'main.jpg'
         })
-        console.log(img1)
+        //console.log(img1)
       }
       if(route.params.image2 != undefined){
-        console.log(img1)
-        console.log(route.params.image2)
+        //console.log(img1)
+        //console.log(route.params.image2)
         setImg2(route.params.image2)
         setFile2({
           uri:route.params.image2,
@@ -85,7 +85,6 @@ export default function PutOutRoom({navigation, route}) {
         })
         console.log(img2)
       }
-
       if(route.params.image3 != undefined){
         setImg3(route.params.image3)  
         setFile3({
@@ -111,16 +110,16 @@ export default function PutOutRoom({navigation, route}) {
         })
         }
 
-      if(route.params.base1 != undefined){
-        setBase1(route.params.base1)}
-      if(route.params.base2 != undefined){
-        setBase2(route.params.base2)}
-      if(route.params.base3 != undefined){
-        setBase3(route.params.base3)}
-      if(route.params.base4 != undefined){
-        setBase4(route.params.base4)}
-      if(route.params.base5 != undefined){
-        setBase5(route.params.base5)}
+      // if(route.params.base1 != undefined){
+      //   setBase1(route.params.base1)}
+      // if(route.params.base2 != undefined){
+      //   setBase2(route.params.base2)}
+      // if(route.params.base3 != undefined){
+      //   setBase3(route.params.base3)}
+      // if(route.params.base4 != undefined){
+      //   setBase4(route.params.base4)}
+      // if(route.params.base5 != undefined){
+      //   setBase5(route.params.base5)}
 
       if(route.params.postcode != undefined){
         setPost(route.params.postcode)
@@ -316,21 +315,6 @@ export default function PutOutRoom({navigation, route}) {
       kitchen: img3,
       photo1: img4,
       photo2: img5
-      // main: base1,
-      // restroom: base2,
-      // kitchen: base3,
-      // photo1: base4,
-      // photo2: base5
-      // main : base64.encode(img1),
-      // restroom : base64.encode(img2),
-      // kitchen : base64.encode(img3),
-      // photo1 : base64.encode(img4),
-      // photo2 : base64.encode(img5),
-      // main : img1.base64,
-      // restroom : img2.base64,
-      // kitchen : img3.base64,
-      // photo1 : img4.base64,
-      // photo2 : img5.base64,
     }
   }
   const [file1,setFile1] = useState({
@@ -725,8 +709,12 @@ export default function PutOutRoom({navigation, route}) {
         </TouchableOpacity>
       </View>
       <TouchableOpacity style = {styles.cButton} onPress={()=>
-      
-      axios.post(`http://54.180.160.150:5000/api/v1/room`,form,{
+      axios.get('https://maps.google.com/maps/api/geocode/json?address=' + post + '&key=' + mApiKey + '&language=ko')
+      .then(function(res){
+        console.log(res)
+        form.append('information[lat]',res.data.results[0].geometry.location.lat)
+        form.append('information[lng]',res.data.results[0].geometry.location.lng)
+        axios.post(`http://54.180.160.150:5000/api/v1/room`,form,{
         headers: {
           Authorization : ut,
           "content-type" : "multipart/form-data"
@@ -734,8 +722,17 @@ export default function PutOutRoom({navigation, route}) {
       })
       .then(function(response){
         console.log(response)
-        navigation.navigate("MainPage")
+        axios.get(`http://54.180.160.150:5000/api/v1/main`,{
+          headers:{
+            Authorization : ut
+          }
+        })
+        .then(function(res){
+          console.log(res)
+          navigation.navigate('MainPage',{u_token : ut, rooms: res.data.data.rooms, newMsg: res.data.data.newMessageNum})
+        })
         Alert.alert("방이 정상적으로 등록되었습니다.")
+        console.log("ut 왜 아안 돼?: ",ut)
       })
       .catch(function(error) {
         if (error.response) {
@@ -755,12 +752,13 @@ export default function PutOutRoom({navigation, route}) {
           console.log('Error', error.message);
         }
         console.log(error.config);
+        console.log("ut 왜 아안 돼?: ",ut)
         //Alert.alert(JSON.stringify(error.response.status))
-      })
+      })})
+
       }>
         <Text style = {styles.cText}>방 내놓기</Text>
       </TouchableOpacity>
-      
     </ScrollView>
   );
 }

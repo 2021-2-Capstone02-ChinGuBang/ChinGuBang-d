@@ -1,13 +1,25 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState,useEffect} from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity,TextInput, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity,Alert,TextInput, FlatList } from 'react-native';
 import user from "../iconimage/user.png"
 import { SearchBar } from 'react-native-elements';
 import schooldata from '../schooldata.json';
+import axios from 'axios';
 
-export default function ProfilePage({content,navigation}) {
+export default function ProfilePage({route,navigation}) {
 
   const [value1, onChangeText1] = React.useState('');
+
+  const [ut,setut] = useState('')
+  const [data,setdata] = useState('')
+useEffect(() => {
+  console.log(route.params)
+  setut(route.params.ut)
+},[])
+
+let form ={
+ nickname : value1
+}
 
   return (
     <View style={styles.container}>
@@ -21,11 +33,28 @@ export default function ProfilePage({content,navigation}) {
               borderWidth:1,
               marginTop:16,
               borderColor:"#797676"}}
-            onChangeText1={text => onChangeText1(text)}
-            value1={value1}
+            onChangeText={text => onChangeText1(text)}
+            value={value1}
             placeholder=" 닉네임을 변경해보세요."
             />
-         <TouchableOpacity style={styles.checkButton}><Text style={styles.checkButtonText}>변경</Text></TouchableOpacity>
+         <TouchableOpacity style={styles.checkButton} 
+         onPress={()=>
+            axios.patch('http://54.180.160.150:5000/api/v1/user',form,{
+          headers:{
+              Authorization : ut
+          }
+        })
+        .then((response)=>{
+          //console.log(response);
+	        Alert.alert("프로필이 닉네임이 변경되었습니다.")
+          navigation.goBack() 
+        })
+        .catch((error)=>{
+          console.log(value1);
+          console.log("Error");
+          //Alert.alert(JSON.stringify(error.response.status))
+        })
+        }><Text style={styles.checkButtonText}>변경</Text></TouchableOpacity>
       </View>
 
      <StatusBar style="auto"/>

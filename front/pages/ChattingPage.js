@@ -81,8 +81,9 @@ useEffect(() => {
                         <Text style={styles.ptext} numberOfLines={1}>{rentType} {monthly}만원/ 보증금 {deposit}만원</Text>
                         <Text style={styles.dtext} numberOfLines={1}>{startDate}~{endDate}</Text>
                         <Text style={styles.ftext} numberOfLines={1}>{area}평,{floor}층</Text>
-                        <Text style={styles.utext} numberOfLines={1}>{createdAt}</Text>
                     </View>
+                    <Text style={styles.utext} numberOfLines={1}>{createdAt}</Text>
+
                 </View>
           </View>
          
@@ -123,17 +124,19 @@ const styles = StyleSheet.create({
         flexDirection:"row",
         borderBottomWidth:4,
         borderBottomColor:"#E5E5E5",
-        padding:10
+        padding:10,
+        alignItems:"center"
       },
     chatC:{
       flex: 6.4,
       backgroundColor: '#E5E5E5',
     },
      c1:{
-        flex:1
+        flex:1,
+        //alignSelf:"center"
       },
       c2:{
-        flex:2
+        flex:2,
       },
       c3:{
         flex:1,
@@ -209,7 +212,6 @@ const styles = StyleSheet.create({
         color:"#000",
         fontSize:9,
         fontWeight:"600",
-        marginTop:6,
         marginLeft:174
         }
     

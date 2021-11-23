@@ -87,10 +87,20 @@ const getItem = (item) => {
           })
           .then(function(response)
           {
-            console.log(response.data); 
-            console.log(response.data.token); 
-            
-            navigation.navigate('MainPage',{u_token : response.data.token}); 
+            //console.log(response); 
+            console.log(response.data);
+            console.log(response.data.token);
+              if(response.data.message =="인증없이 보러가기 성공"){
+                axios.get(`http://54.180.160.150:5000/api/v1/main`,{
+                  headers:{
+                    Authorization : response.data.token
+                  }
+                })
+                .then(function(res){
+                  console.log(res)
+                  navigation.navigate('MainPage',{u_token : response.data.token, rooms: res.data.data.rooms, newMsg: res.data.data.newMessageNum})
+                })
+              }
           })
           .catch(function (error) {console.log("오류"); })
   
@@ -139,7 +149,7 @@ const getItem = (item) => {
                                            })
                                            .then(function(res){
                                              console.log(res)
-                                             navigation.navigate('MainPage',{u_token : response.data.token, rooms: res.data.data.rooms})
+                                             navigation.navigate('MainPage',{u_token : response.data.token, rooms: res.data.data.rooms, newMsg: res.data.data.newMessageNum})
                                            })
                                          }
                                         })

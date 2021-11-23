@@ -267,7 +267,7 @@ export default function RoomPage({navigation, route}) {
                         radius = {50}
                         strokeColor = "#D84315"
                         strokeWidth = {5}
-                        // fillColor = "#D84315">
+                        // fillColor = "#D84315"
                         >
                     </Circle>
                 </MapView>
@@ -281,7 +281,7 @@ export default function RoomPage({navigation, route}) {
             <TouchableOpacity style = {styles.cButton} onPress={()=>
             {   
                 console.log("ut 확인용",ut)
-                navigation.navigate("쪽지 보내기",{user_id:ut, roomID:room.data.roomID, rcID:room.data.user.userID})
+                navigation.navigate("쪽지 보내기")
             }}>
                 <Text style = {styles.cText}>쪽지 보내기</Text>
             </TouchableOpacity>        

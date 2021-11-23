@@ -14,8 +14,8 @@ export default function RoomCard({content,navigation,ut}) {
     const [date,setDate]=useState("")
     const [u_t,setUt] = useState("")
     const [like,setLike] = useState(content.isLike)
+    const [ID,setID]=useState(content.roomID)
     let main = content.photo.main
-
     useEffect(()=>{
       console.log("#############################################")
       console.log(content)
@@ -51,49 +51,8 @@ export default function RoomCard({content,navigation,ut}) {
                 console.log(res.data.results[0].geometry.location)
                 navigation.navigate('방 보기',{content: response.data, u_t:u_t, location: res.data.results[0].geometry.location})
             })
-            .catch(function(error) {
-                if (error.response) {
-                  // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
-                  console.log(error.response.data);
-                  console.log(error.response.status);
-                  //console.log(error.response.headers);
-                }
-                else if (error.request) {
-                  // 요청이 이루어 졌으나 응답을 받지 못했습니다.
-                  // `error.request`는 브라우저의 XMLHttpRequest 인스턴스 또는
-                  // Node.js의 http.ClientRequest 인스턴스입니다.
-                  console.log(error.request);
-                }
-                else {
-                  // 오류를 발생시킨 요청을 설정하는 중에 문제가 발생했습니다.
-                  console.log('Error', error.message);
-                }
-                console.log(error.config);
-                //Alert.alert(JSON.stringify(error.response.status))
-              });
-            
         })
-        .catch((error)=>{
-          if (error.response) {
-            // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
-            console.log(error.response.data);
-            console.log(error.response.status);
-            //console.log(error.response.headers);
-          }
-          else if (error.request) {
-            // 요청이 이루어 졌으나 응답을 받지 못했습니다.
-            // `error.request`는 브라우저의 XMLHttpRequest 인스턴스 또는
-            // Node.js의 http.ClientRequest 인스턴스입니다.
-            console.log(error.request);
-          }
-          else {
-            // 오류를 발생시킨 요청을 설정하는 중에 문제가 발생했습니다.
-            console.log('Error', error.message);
-          }
-          console.log(error.config);
-          //Alert.alert(JSON.stringify(error.response.status))
-        })
-        // navigation.navigate('방 보기',{roomID: 6})
+        
         }} >
         <View style={styles.card}>
             <View style={styles.c1}>
@@ -106,22 +65,22 @@ export default function RoomCard({content,navigation,ut}) {
                 <View style={styles.c3}>
                     <View style={styles.kind}><Text style={styles.kindtext}>{content.type.roomType}</Text></View>
                     <View style={styles.method}><Text style={styles.methodtext}>{content.type.category}</Text></View>
-                    <TouchableOpacity style={styles.checkButton} onPress={()=>{
-                        axios.post(`http://54.180.160.150:5000/api/v1/room/like/`+content.roomID,null,{
-                              headers:{
-                                 Authorization: u_t,
-                                 }
-                                })
-                              .then(function(response){
-                                console.log(response);
-                                Alert.alert("좋아요");
-                              })
-                              .catch(function(error) {
-                              
-                                console.log(error);
-                                //Alert.alert(JSON.stringify(error.response.status))
-                              })
-                              }}>
+                    <TouchableOpacity style={{width:35,height:35}} onPress={()=>{like ? setLike(false) : setLike(true);
+                                                                   axios.post(`http://54.180.160.150:5000/api/v1/room/like/`+ID,null,{
+                                                                  headers:{
+                                                                      Authorization:u_t,
+                                                                  }
+                                                                }).then(function(res){
+                                                                  Alert.alert(res.message)
+                                                                  console.log(res)
+                                                                  console.log(u_t)
+                                                                })
+                                                                .catch(function(res){
+                                                                  console.log(ID)
+                                                                  Alert.alert(res.message)
+                                                                  console.log(res)
+                                                                  console.log("u_t:",u_t)
+                                                                })}}>
                       <View style={styles.heartImage}>
                             <Ionicons
                               name={like ? "ios-heart" : "ios-heart-outline"}
