@@ -504,9 +504,10 @@ export default function PutOutRoom({navigation, route}) {
               <TextInput
               style={styles.basicInput}
               keyboardType="number-pad"
-              placeholder="ex) 30"
+              placeholder={rent=="전세" ? "전세 선택 시 비활성화" : "ex) 30"}
               placeholderTextColor="#60605e"
               onChangeText={text=>setMonthly(text)}
+              editable={rent=="월세" ? true : false}
               />
               <Text style={styles.infoData}>만원</Text>
           </View>

@@ -38,11 +38,12 @@ export default function MyRoomCard({content, navigation,ut}) {
       .then((response)=>{
           console.log(response.data);
           console.log("이거 맞나")
-          axios.get('https://maps.google.com/maps/api/geocode/json?address=' + response.data.data.information.post + '&key=' + mApiKey + '&language=ko')
-          .then(function(res){
-              console.log(res.data.results[0].geometry.location)
-              navigation.navigate('방 보기',{content: response.data, u_t:u_t, location: res.data.results[0].geometry.location})
-          })
+          navigation.navigate('방 보기',{content: response.data, u_t:u_t})
+          // axios.get('https://maps.google.com/maps/api/geocode/json?address=' + response.data.data.information.post + '&key=' + mApiKey + '&language=ko')
+          // .then(function(res){
+          //     console.log(res.data.results[0].geometry.location)
+          //     navigation.navigate('방 보기',{content: response.data, u_t:u_t, location: res.data.results[0].geometry.location})
+          // })
       })
       
       }} >
@@ -87,8 +88,34 @@ export default function MyRoomCard({content, navigation,ut}) {
                   <Text style={styles.dtext} numberOfLines={1}>{date}</Text>
                   <Text style={styles.ftext} numberOfLines={1}>{content.information.floor+"층 , "+content.information.area+"평"}</Text>
                   <Text style={styles.utext} numberOfLines={1}>{content.createdAt.toString().slice(0,10)}</Text>
-  <View  style={styles.c5}>
-                  <TouchableOpacity style={styles.checkButton} onPress={()=>{navigation.navigate('방 수정하기')}}><Text style={styles.checkButtonText}>수정</Text></TouchableOpacity>
+                  <View  style={styles.c5}>
+                  <TouchableOpacity style={styles.checkButton} onPress={()=>{
+                          axios.get(`http://54.180.160.150:5000/api/v1/room/`+content.roomID,{
+                              headers:{
+                                  Authorization:u_t,
+                              }
+                          })
+                          .then((response)=>{
+                              console.log(response.data);
+                              console.log("이거 맞나")
+                              navigation.navigate('방 수정하기',{content: response.data, u_t:u_t})
+                          })
+                          .catch((error)=>{
+                            if (error.response) {
+                              console.log(error.response.data);
+                              console.log(error.response.status);
+                            }
+                            else if (error.request) {
+
+                              console.log(error.request);
+                            }
+                            else {
+                              console.log('Error', error.message);
+                            }
+                            console.log(error.config);
+                          })
+                          }} >
+                  <Text style={styles.checkButtonText}>수정</Text></TouchableOpacity>
                   <TouchableOpacity style={styles.checkButton}
                   onPress={() =>axios.delete(`http://54.180.160.150:5000/api/v1/room/`+content.roomID,{
                     headers:{

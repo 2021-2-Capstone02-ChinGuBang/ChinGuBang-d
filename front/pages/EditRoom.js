@@ -31,20 +31,15 @@ import vr_image from "../assets/vr_image.png"
 
 
 export default function EditRoom({navigation, route}) {
-
-  const [img1,setImg1] = useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl93ASaa2NdIwZutsY6l82DpqvKCI5B43XBQ&usqp=CAU")
-  const [img2,setImg2] = useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl93ASaa2NdIwZutsY6l82DpqvKCI5B43XBQ&usqp=CAU")
-  const [img3,setImg3] = useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl93ASaa2NdIwZutsY6l82DpqvKCI5B43XBQ&usqp=CAU")
-  const [img4,setImg4] = useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl93ASaa2NdIwZutsY6l82DpqvKCI5B43XBQ&usqp=CAU")
-  const [img5,setImg5] = useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl93ASaa2NdIwZutsY6l82DpqvKCI5B43XBQ&usqp=CAU")
+  let mApiKey = 'AIzaSyA-TBtTOWILp1wUABnai9adbbJMgcPP008'
+  const [img1,setImg1] = useState(route.params.content.data.photo.main)
+  const [img2,setImg2] = useState(route.params.content.data.photo.restroom)
+  const [img3,setImg3] = useState(route.params.content.data.photo.kitchen)
+  const [img4,setImg4] = useState(route.params.content.data.photo.photo1)
+  const [img5,setImg5] = useState(route.params.content.data.photo.photo2)
   
   //유저 토큰
   const [ut,setut]=useState("")
-  useEffect(()=>{
-    console.log(route.params);
-    console.log(route.params.u_token);
-    setut(route.params.u_token)
-  },[])
   
   let form = new FormData();
 
@@ -53,85 +48,14 @@ export default function EditRoom({navigation, route}) {
   const [base3,setBase3] = useState("")
   const [base4,setBase4] = useState("")
   const [base5,setBase5] = useState("")
-  const [post,setPost] = useState('주소')
   //컨텐츠 새로고침,데이터 갱신
   const isFocused = useIsFocused()
 
-  useEffect(() => {
-    if (isFocused) {
-      console.log("Focused")
-      if(route.params != undefined){
-      if(route.params.image1 != undefined){
-        console.log(route.params.image1)
-        setImg1(route.params.image1)
-        setFile1({
-          uri: route.params.image1,
-          type: 'image/jpg',
-          name: 'main.jpg'
-        })
-        console.log(img1)
-      }
-      if(route.params.image2 != undefined){
-        console.log(img1)
-        console.log(route.params.image2)
-        setImg2(route.params.image2)
-        setFile2({
-          uri:route.params.image2,
-          type: 'image/jpg',
-          name: 'kitchen.jpg'
-        })
-        console.log(img2)
-      }
-      if(route.params.image3 != undefined){
-        setImg3(route.params.image3)  
-        setFile3({
-          uri:route.params.image3,
-          type: 'image/jpg',
-          name: 'restroom.jpg'
-        })
-        }
-      if(route.params.image4 != undefined){
-        setImg4(route.params.image4)
-        setFile4({
-          uri:route.params.image4,
-          type: 'image/jpg',
-          name: 'photo1.jpg'
-        })
-        }
-      if(route.params.image5 != undefined){
-        setImg5(route.params.image5)
-        setFile5({
-          uri:route.params.image5,
-          type: 'image/jpg',
-          name: 'photo2.jpg'
-        })
-        }
+ 
 
-      if(route.params.base1 != undefined){
-        setBase1(route.params.base1)}
-      if(route.params.base2 != undefined){
-        setBase2(route.params.base2)}
-      if(route.params.base3 != undefined){
-        setBase3(route.params.base3)}
-      if(route.params.base4 != undefined){
-        setBase4(route.params.base4)}
-      if(route.params.base5 != undefined){
-        setBase5(route.params.base5)}
-
-      if(route.params.postcode != undefined){
-        setPost(route.params.postcode)
-        console.log("focused");
-      }
-    }
-    }
-
-
-
-  
-}, [isFocused])
-
-  const [date1, setDate1] = useState(new Date());
-  const [date2, setDate2] = useState(new Date());
+  const [date1, setDate1] = useState(new Date(route.params.content.data.rentPeriod.startDate));
+  const [date2, setDate2] = useState(new Date(route.params.content.data.rentPeriod.endDate));
+  const [post,setPost] = useState('주소')
 
   const [kcol, setKcol] = useState([0,0,0,0])
   const [mcol, setMcol] = useState([0,0])
@@ -149,12 +73,12 @@ export default function EditRoom({navigation, route}) {
   const [gender, setGender] = useState('')
   const [smoking, setSmoking] = useState('')
 
-  const [deposit, setDeposit] = useState(0)
-  const [monthly, setMonthly] = useState(0)
-  const [control, setControl] = useState(0)
-  const [area,setArea] = useState(0)
-  const [floor,setFloor] = useState(0)
-  const [construction,setConstruction] = useState(0)
+  const [deposit, setDeposit] = useState('')
+  const [monthly, setMonthly] = useState('')
+  const [control, setControl] = useState('')
+  const [area,setArea] = useState('')
+  const [floor,setFloor] = useState('')
+  const [construction,setConstruction] = useState('')
 
   let colour = ["#C4C4C4","#D84315"]
   const [show, setShow] = useState(false);
@@ -168,20 +92,20 @@ export default function EditRoom({navigation, route}) {
   let cigar = ["비흡연","무관"]
   const [oCols,setOCols]=useState([0,0,0,0,0,0,0,0,0,0,0,0,0,0])
   const [options,setOptions]=useState([
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,])
+    route.params.content.data.options.bed,
+    route.params.content.data.options.table,
+    route.params.content.data.options.refrigerator,
+    route.params.content.data.options.airconditioner,
+    route.params.content.data.options.chair,
+    route.params.content.data.options.closet,
+    route.params.content.data.options.washingmachine,
+    route.params.content.data.options.microwave,
+    route.params.content.data.options.wifi,
+    route.params.content.data.options.tv,
+    route.params.content.data.options.cctv,
+    route.params.content.data.options.parking,
+    route.params.content.data.options.elevator,
+    route.params.content.data.options.induction])
   //const [ocolour,setColours]=useState("#C4C4C4")
   const onPressHandler=i=>{
     let col = oCols.slice();
@@ -376,9 +300,125 @@ export default function EditRoom({navigation, route}) {
   form.append('photo1',file4)
   form.append('photo2',file5)
  
+  useEffect(() => {
+    console.log(route.params.content);
+    console.log(route.params.u_t);
+    setut(route.params.u_t)
+    if (isFocused) {
+      console.log("Focused")
+      if(route.params != undefined){
+      if(route.params.image1 != undefined){
+        console.log(route.params.image1)
+        setImg1(route.params.image1)
+        setFile1({
+          uri: route.params.image1,
+          type: 'image/jpg',
+          name: 'main.jpg'
+        })
+        console.log(img1)
+      }
+      if(route.params.image2 != undefined){
+        console.log(img1)
+        console.log(route.params.image2)
+        setImg2(route.params.image2)
+        setFile2({
+          uri:route.params.image2,
+          type: 'image/jpg',
+          name: 'kitchen.jpg'
+        })
+        console.log(img2)
+      }
+      if(route.params.image3 != undefined){
+        setImg3(route.params.image3)  
+        setFile3({
+          uri:route.params.image3,
+          type: 'image/jpg',
+          name: 'restroom.jpg'
+        })
+      }
+      if(route.params.image4 != undefined){
+        setImg4(route.params.image4)
+        setFile4({
+          uri:route.params.image4,
+          type: 'image/jpg',
+          name: 'photo1.jpg'
+        })
+      }
+      if(route.params.image5 != undefined){
+        setImg5(route.params.image5)
+        setFile5({
+          uri:route.params.image5,
+          type: 'image/jpg',
+          name: 'photo2.jpg'
+        })
+      }
 
+      if(route.params.base1 != undefined){
+        setBase1(route.params.base1)}
+      if(route.params.base2 != undefined){
+        setBase2(route.params.base2)}
+      if(route.params.base3 != undefined){
+        setBase3(route.params.base3)}
+      if(route.params.base4 != undefined){
+        setBase4(route.params.base4)}
+      if(route.params.base5 != undefined){
+        setBase5(route.params.base5)}
 
-  return (
+      if(route.params.postcode != undefined){
+        setPost(route.params.postcode)
+        console.log("focused");
+      }
+    }
+    
+    kindColor(kind.indexOf(route.params.content.data.type.roomType))
+    methodColor(method.indexOf(route.params.content.data.type.category))
+    typeColor(type.indexOf(route.params.content.data.type.rentType))
+    sexColor(sex.indexOf(route.params.content.data.conditions.gender))
+    cigarColor(cigar.indexOf(route.params.content.data.conditions.smoking))
+    setAddress(route.params.content.data.information.address)
+    setPost(route.params.content.data.information.post)
+    setQuery(route.params.content.data.information.query)
+    setDescription(route.params.content.data.information.description)
+    setDeposit(route.params.content.data.price.deposit)
+    setMonthly(route.params.content.data.price.monthly==null ? 0 : route.params.content.data.price.monthly)
+    setControl(route.params.content.data.price.control)
+    setArea(route.params.content.data.information.area)
+    setFloor(route.params.content.data.information.floor)
+    setConstruction(route.params.content.data.information.construction)
+    setFile1({
+      uri:img1,
+      type: 'image/jpg',
+      name: 'main.jpg'
+    })
+    setFile2({
+      uri:img2,
+      type: 'image/jpg',
+      name: 'kitchen.jpg'
+    })
+    setFile3({
+      uri:img3,
+      type: 'image/jpg',
+      name: 'restroom.jpg'
+    })
+    setFile4({
+      uri:img4,
+      type: 'image/jpg',
+      name: 'photo1.jpg'
+    })
+    setFile5({
+      uri:img5,
+      type: 'image/jpg',
+      name: 'photo2.jpg'
+    })
+    let opts = options.map((content)=>{return content ? 1 : 0})
+    console.log(opts)
+    setOCols(opts)
+  }
+  setReady(false)
+  }, [isFocused])
+  const [ready,setReady] = useState(true)
+
+  return ready ? <Loading/> : (
     <ScrollView style = {styles.container}>
       <View style = {styles.components}>
         <Text style = {styles.subTitle}>매물 종류</Text>
@@ -477,7 +517,7 @@ export default function EditRoom({navigation, route}) {
         <Text style={styles.textInputStyle}>{post}</Text>
         <TextInput
               style={styles.textInputStyle}
-              placeholder="상세주소를 입력하세요."
+              placeholder={route.params.content.data.information.address}
               placeholderTextColor="#60605e"
               onChangeText={text=>setAddress(text)}
         />
@@ -490,7 +530,7 @@ export default function EditRoom({navigation, route}) {
               <TextInput
               style={styles.basicInput}
               keyboardType="number-pad"
-              placeholder="ex) 200"
+              placeholder ={route.params.content.data.price.deposit.toString()}
               placeholderTextColor="#60605e"
               onChangeText={text=>setDeposit(text)}
               />
@@ -501,9 +541,10 @@ export default function EditRoom({navigation, route}) {
               <TextInput
               style={styles.basicInput}
               keyboardType="number-pad"
-              placeholder="ex) 30"
+              placeholder={rent=="전세" ? "전세 선택 시 비활성화" : route.params.content.data.price.monthly==null ? "0" : route.params.content.data.price.monthly.toString()}
               placeholderTextColor="#60605e"
               onChangeText={text=>setMonthly(text)}
+              editable={rent=="월세" ? true : false}
               />
               <Text style={styles.infoData}>만원</Text>
           </View>
@@ -512,7 +553,7 @@ export default function EditRoom({navigation, route}) {
               <TextInput
               style={styles.basicInput}
               keyboardType="number-pad"
-              placeholder="ex) 5"
+              placeholder={route.params.content.data.price.control.toString()}
               placeholderTextColor="#60605e"
               onChangeText={text=>setControl(text)}
               />
@@ -523,7 +564,7 @@ export default function EditRoom({navigation, route}) {
               <TextInput
               style={styles.basicInput}
               keyboardType="number-pad"
-              placeholder="ex) 10"
+              placeholder={route.params.content.data.information.area.toString()}
               placeholderTextColor="#60605e"
               onChangeText={text=>setArea(text)}
               />
@@ -534,7 +575,7 @@ export default function EditRoom({navigation, route}) {
               <TextInput
               style={styles.basicInput}
               keyboardType="number-pad"
-              placeholder="ex) 5"
+              placeholder={route.params.content.data.information.floor.toString()}
               placeholderTextColor="#60605e"
               onChangeText={text=>setFloor(text)}
               />
@@ -545,7 +586,7 @@ export default function EditRoom({navigation, route}) {
               <TextInput
               style={styles.basicInput}
               keyboardType="number-pad"
-              placeholder="ex) 2020"
+              placeholder={route.params.content.data.information.construction.toString()}
               placeholderTextColor="#60605e"
               onChangeText={text=>setConstruction(text)}
               />
@@ -660,7 +701,7 @@ export default function EditRoom({navigation, route}) {
               style={styles.detailInputStyle}
               multiline
               numberOfLines={10}
-              placeholder="방에 대한 상세 설명을 작성해주세요."
+              placeholder={route.params.content.data.information.description}
               placeholderTextColor="#60605e"
               keyboardType="default"
               onChangeText={text=>setDescription(text)}
@@ -706,11 +747,12 @@ export default function EditRoom({navigation, route}) {
         </TouchableOpacity>
       </View>
       <TouchableOpacity style = {styles.cButton} onPress={()=>
-      axios.get('https://maps.google.com/maps/api/geocode/json?address=' + room.information.post + '&key=' + mApiKey + '&language=ko')
-      .then(function(response){
-        form.append('information[lat]',response.results[0].geometry.location.lat)
-        form.append('information[lng]',response.results[0].geometry.location.lng)
-        axios.post(`http://54.180.160.150:5000/api/v1/room`,form,{
+      axios.get('https://maps.google.com/maps/api/geocode/json?address=' + post + '&key=' + mApiKey + '&language=ko')
+      .then(function(res){
+        console.log(res)
+        form.append('information[lat]',res.data.results[0].geometry.location.lat)
+        form.append('information[lng]',res.data.results[0].geometry.location.lng)
+        axios.patch(`http://54.180.160.150:5000/api/v1/room/`+route.params.content.data.roomID,form,{
         headers: {
           Authorization : ut,
           "content-type" : "multipart/form-data"
@@ -718,8 +760,16 @@ export default function EditRoom({navigation, route}) {
       })
       .then(function(response){
         console.log(response)
-        navigation.navigate("MainPage")
-        Alert.alert("방이 정상적으로 등록되었습니다.")
+        axios.get(`http://54.180.160.150:5000/api/v1/main`,{
+          headers:{
+            Authorization : ut
+          }
+        })
+        .then(function(res){
+          console.log(res)
+          navigation.navigate('MainPage',{u_token : ut, rooms: res.data.data.rooms, newMsg: res.data.data.newMessageNum})
+        })
+        Alert.alert("방이 정상적으로 수정되었습니다.")
       })
       .catch(function(error) {
         if (error.response) {
@@ -743,7 +793,7 @@ export default function EditRoom({navigation, route}) {
       })})
 
       }>
-        <Text style = {styles.cText}>방 내놓기</Text>
+        <Text style = {styles.cText}>방 수정하기</Text>
       </TouchableOpacity>
     </ScrollView>
   );

@@ -28,56 +28,23 @@ import roomImage from "../assets/roomImage.png"
 import axios from 'axios';
 
 export default function RoomPage({navigation, route}) {
-    let mApiKey = 'AIzaSyA-TBtTOWILp1wUABnai9adbbJMgcPP008'
-    const[long,setLong] = useState(route.params.location.lng)
-    const[lat,setLat] = useState(route.params.location.lat)
+    // let mApiKey = 'AIzaSyA-TBtTOWILp1wUABnai9adbbJMgcPP008'
+    // const[long,setLong] = useState(route.params.location.lng)
+    // const[lat,setLat] = useState(route.params.location.lat)
     const[ut,setUt]=useState('')
+    const [touch, setTouch] = useState(false)
     useEffect(()=>{
+        if(route.params.auth==-1){
+            setTouch(true)
+        }
         setUt(route.params.u_t)
         console.log("ut는 이거다",route.params.u_t)
         console.log(ut)
-        // axios.get('https://maps.google.com/maps/api/geocode/json?address=' + route.params.content.data.information.post + '&key=' + mApiKey + '&language=ko')
-        // .then(function(res){
-        //     console.log(res.data.results[0].geometry.location)
-        //     setLong(res.data.results[0].geometry.location.lng);
-        //     setLat(res.data.results[0].geometry.location.lat);
-            
-        // })
-        // .catch(function(error) {
-        //     if (error.response) {
-        //       // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
-        //       console.log(error.response.data);
-        //       console.log(error.response.status);
-        //       //console.log(error.response.headers);
-        //     }
-        //     else if (error.request) {
-        //       // 요청이 이루어 졌으나 응답을 받지 못했습니다.
-        //       // `error.request`는 브라우저의 XMLHttpRequest 인스턴스 또는
-        //       // Node.js의 http.ClientRequest 인스턴스입니다.
-        //       console.log(error.request);
-        //     }
-        //     else {
-        //       // 오류를 발생시킨 요청을 설정하는 중에 문제가 발생했습니다.
-        //       console.log('Error', error.message);
-        //     }
-        //     console.log(error.config);
-        //     //Alert.alert(JSON.stringify(error.response.status))
-        //   });
         
     },[])
     const [room, setRoom] = useState(route.params.content)
     const [option,setOption] = useState(room.data.options)
     let photo = [
-        // `data:image/jpg;base64,${room.data.photo.main}`,
-        // `data:image/jpg;base64,${room.data.photo.restroom}`,
-        // `data:image/jpg;base64,${room.data.photo.kitchen}`,
-        // `data:image/jpg;base64,${room.data.photo.photo1}`,
-        // `data:image/jpg;base64,${room.data.photo.photo2}`,
-        // base64.decode(room.data.photo.main), 
-        // base64.decode(room.data.photo.restroom), 
-        // base64.decode(room.data.photo.kitchen), 
-        // base64.decode(room.data.photo.photo1), 
-        // base64.decode(room.data.photo.photo2)
         room.data.photo.main,
         room.data.photo.restroom,
         room.data.photo.kitchen,
@@ -171,7 +138,8 @@ export default function RoomPage({navigation, route}) {
                 </View>
                 <View style={styles.info}>
                     <Text style={styles.infoComp}>임대 기간</Text>
-                    <Text style={styles.infoData}>{room.data.rentPeriod.startDate.toString().slice(0,10)} ~ {room.data.rentPeriod.endDate.toString().slice(0,10)}</Text>
+                    <Text style={styles.infoData}>{room.data.type.category=="단기임대" ? room.data.rentPeriod.startDate.toString().slice(0,10)+"~"+room.data.rentPeriod.endDate.toString().slice(0,10)
+                                                                                    : room.data.rentPeriod.startDate.toString().slice(0,10)}</Text>
                 </View>
                 <View style={styles.info}>
                     <Text style={styles.infoComp}>층수</Text>
@@ -190,7 +158,7 @@ export default function RoomPage({navigation, route}) {
                 </View>
                 <View style={styles.info}>
                     <Text style={styles.infoComp}>월세</Text>
-                    <Text style={styles.infoData}>{room.data.price.monthly+" 만원"}</Text>
+                    <Text style={styles.infoData}>{room.data.type.rentType=="전세" ? "0 만원" : room.data.price.monthly+" 만원"}</Text>
                 </View>
                 <View style={styles.info}>
                     <Text style={styles.infoComp}>관리비</Text>
@@ -252,8 +220,8 @@ export default function RoomPage({navigation, route}) {
                 <MapView style={styles.map} 
                     provider={PROVIDER_GOOGLE} 
                     initialRegion={{
-                        latitude: lat, 
-                        longitude: long,
+                        latitude: parseFloat(room.data.information.lat), 
+                        longitude: parseFloat(room.data.information.lng),
                         latitudeDelta: 0.0025,
                         longitudeDelta: 0.002,
                 }}
@@ -261,13 +229,13 @@ export default function RoomPage({navigation, route}) {
                 zoomEnabled={false}>
                     <Circle 
                         center={{
-                            latitude: lat, 
-                            longitude: long,
+                            latitude: parseFloat(room.data.information.lat), 
+                            longitude: parseFloat(room.data.information.lng),
                         }}
                         radius = {50}
                         strokeColor = "#D84315"
                         strokeWidth = {5}
-                        // fillColor = "#D84315"
+                        fillColor = "#D84315"
                         >
                     </Circle>
                 </MapView>
@@ -278,10 +246,13 @@ export default function RoomPage({navigation, route}) {
                     <Image source={roomImage} style={styles.mainImage}></Image>
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity style = {styles.cButton} onPress={()=>
+            <TouchableOpacity style = {styles.cButton} 
+            // disabled={touch}
+            onPress={()=>
             {   
-                console.log("ut 확인용",ut)
-                navigation.navigate("쪽지 보내기")
+                touch ? Alert.alert("대학생 등록을 해주세요!") : 
+                //console.log("ut 확인용",ut)
+                navigation.navigate("쪽지 보내기",{user_id:ut, roomID:room.data.roomID, rcID:room.data.user.userID})
             }}>
                 <Text style = {styles.cText}>쪽지 보내기</Text>
             </TouchableOpacity>        

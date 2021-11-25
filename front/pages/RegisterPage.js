@@ -6,53 +6,85 @@ import axios from "axios"
 
 export default function RegisterPage({navigation,route}) {
 
-
+  const [re, setre] = useState("비밀번호가 동일하지 않습니다.");
   const [reg, setreg] = useState(false);
-
+  const [value1, onChangeText1] = React.useState('재확인');
   const [value2, onChangeText2] = React.useState('');
   const [value3, onChangeText3] = React.useState('');
  
   useEffect(()=>{
     console.log(route.params);
+    //if(value1==value2){setre("비밀번호가 동일합니다.")}
+    //else if(value1!=value2){setre("비밀번호가 동일하지 않습니다.")}
      }
-   
-   
 , [])
 
-  return reg ?(
-    <View style={styles.container}>
-      <Text style={styles.title}>나의 정보</Text>
-      
-      <View style={styles.idContainer}>
-        <Text style={styles.id}>아이디</Text>
-        
-        <View style={{ width:220,height: 40, borderWidth:1.5,borderColor:"#797676"}}>
-        <Text style={styles.EmailText}>{route.params.email}</Text>
-        </View>
-        </View>
-      <View style={styles.pwContainer}>
-        <Text style={styles.pw}>비밀번호</Text>
-        <TextInput
-            secureTextEntry
-            style={{ width:220,height: 40, borderWidth:1.5,borderColor:"#797676"}}
-            onChangeText={text => onChangeText2(text)}
-            value2={value2}
-            />
-      </View>
+function isPassword(asValue){
+  var regExp = /^(?=.*[a-zA-z])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
+  console.log(regExp.test(asValue));
+  if(regExp.test(asValue)==true){
+    setreg(true);
+     return alert("비밀번호 OK!");
 
-      <Text style={styles.pwt}>비밀번호는 8~16자로 영문, 숫자, 특수문자를 최소 한가지씩 조합해주세요:)</Text>
-      <TouchableOpacity style={styles.check} onPress={()=>isPassword(value2)}>
-        <Text style={styles.checkbox}>비밀번호 확인</Text>
-      </TouchableOpacity>
+  }
+  else if(regExp.test(asValue)==false){
+    setreg(false);
+     return alert("비밀번호 형식이 틀립니다!");
+     
+  }
+}
+
+function isre(asValue){
+  if(asValue==value2){setre("비밀번호가 동일합니다.")}
+  else if(asValue=value2){setre("비밀번호가 동일하지 않습니다.")}
+}
+  return reg ?(  re=="비밀번호가 동일합니다."?
+   ( <View style={styles.container}>
+    <Text style={styles.title}>나의 정보</Text>
+    
+    <View style={styles.idContainer}>
+      <Text style={styles.id}>아이디 </Text>
       
-      <View style={styles.nicknameContainer}>
-        <Text style={styles.nickname}>닉네임</Text>  
-        <TextInput
-            style={{ width:220,height: 40, borderWidth:1.5,borderColor:"#797676"}}
-            onChangeText={text => onChangeText3(text)}
-            value3={value3}
-            />
+      <View style={{ width:200,height: 40, borderWidth:1.5,borderColor:"#797676"}}>
+      <Text style={styles.EmailText}>{route.params.email}</Text>
       </View>
+      </View>
+    <View style={styles.pwContainer}>
+      <Text style={styles.pw}>비밀번호  </Text>
+      <TextInput
+          secureTextEntry
+          style={{ width:200,height: 40, borderWidth:1.5,borderColor:"#797676"}}
+          onChangeText={text => onChangeText2(text)}
+          value2={value2}
+          />
+      <TouchableOpacity style={styles.check} onPress={()=>isPassword(value2)}>
+        <Text style={styles.checkbox}>확인</Text>
+      </TouchableOpacity>
+    </View>
+
+    <Text style={styles.pwt}>비밀번호는 8~16자로 영문, 숫자, 특수문자를 최소 한가지씩 조합해주세요:)</Text>
+   
+    <View style={styles.rpwContainer}>
+      <Text style={styles.rpw}>pw재확인</Text>
+      <TextInput
+          secureTextEntry
+          style={{ width:200,height: 40, borderWidth:1.5,borderColor:"#797676"}}
+          onChangeText={text => onChangeText1(text)}
+          value1={value1}
+          />
+          <TouchableOpacity style={styles.check} onPress={()=>isre(value1)}>
+            <Text style={styles.checkbox}>확인</Text>
+          </TouchableOpacity>
+    </View>
+    <Text style={styles.ret}>{re}</Text>
+    <View style={styles.nicknameContainer}>
+      <Text style={styles.nickname}>닉네임 </Text>  
+      <TextInput
+          style={{ width:200,height: 40, borderWidth:1.5,borderColor:"#797676"}}
+          onChangeText={text => onChangeText3(text)}
+          value3={value3}
+          />
+    </View>
       <TouchableOpacity style={styles.regiButton} 
         onPress={() =>axios.post(`http://54.180.160.150:5000/api/v1/auth/signup`, {
           email : route.params.email,
@@ -70,41 +102,101 @@ export default function RegisterPage({navigation,route}) {
           }
         ><Text style={styles.regiButtonText}>가입하기</Text></TouchableOpacity>
       <StatusBar style="auto" />
+    </View>):(<View style={styles.container}>
+    <Text style={styles.title}>나의 정보</Text>
+    
+    <View style={styles.idContainer}>
+      <Text style={styles.id}>아이디 </Text>
+      
+      <View style={{ width:200,height: 40, borderWidth:1.5,borderColor:"#797676"}}>
+      <Text style={styles.EmailText}>{route.params.email}</Text>
+      </View>
+      </View>
+    <View style={styles.pwContainer}>
+      <Text style={styles.pw}>비밀번호  </Text>
+      <TextInput
+          secureTextEntry
+          style={{ width:200,height: 40, borderWidth:1.5,borderColor:"#797676"}}
+          onChangeText={text => onChangeText2(text)}
+          value2={value2}
+          />
+      <TouchableOpacity style={styles.check} onPress={()=>isPassword(value2)}>
+        <Text style={styles.checkbox}>확인</Text>
+      </TouchableOpacity>
     </View>
+
+    <Text style={styles.pwt}>비밀번호는 8~16자로 영문, 숫자, 특수문자를 최소 한가지씩 조합해주세요:)</Text>
+   
+    <View style={styles.rpwContainer}>
+      <Text style={styles.rpw}>pw재확인</Text>
+      <TextInput
+          secureTextEntry
+          style={{ width:200,height: 40, borderWidth:1.5,borderColor:"#797676"}}
+          onChangeText={text => onChangeText1(text)}
+          value1={value1}
+          />
+          <TouchableOpacity style={styles.check} onPress={()=>isre(value1)}>
+            <Text style={styles.checkbox}>확인</Text>
+          </TouchableOpacity>
+    </View>
+    <Text style={styles.ret}>{re}</Text>
+    <View style={styles.nicknameContainer}>
+      <Text style={styles.nickname}>닉네임 </Text>  
+      <TextInput
+          style={{ width:200,height: 40, borderWidth:1.5,borderColor:"#797676"}}
+          onChangeText={text => onChangeText3(text)}
+          value3={value3}
+          />
+    </View>
+      <TouchableOpacity style={styles.regiButton} 
+        onPress={() => alert("비밀번호를 재확인 해주세요.")}
+        ><Text style={styles.regiButtonText}>가입하기</Text></TouchableOpacity>
+      <StatusBar style="auto" />
+    </View>)
   ):(
     <View style={styles.container}>
-      <Text style={styles.title}>나의 정보</Text>
+    <Text style={styles.title}>나의 정보</Text>
       
-      <View style={styles.idContainer}>
-        <Text style={styles.id}>아이디</Text>
-        
-        <View style={{ width:220,height: 40, borderWidth:1.5,borderColor:"#797676"}}>
-        <Text style={styles.EmailText}>{route.params.email}</Text>
-        </View>
-        </View>
-      <View style={styles.pwContainer}>
-        <Text style={styles.pw}>비밀번호</Text>
-        <TextInput
-            secureTextEntry
-            style={{ width:220,height: 40, borderWidth:1.5,borderColor:"#797676"}}
-            onChangeText={text => onChangeText2(text)}
-            value2={value2}
-            />
+    <View style={styles.idContainer}>
+      <Text style={styles.id}>아이디 </Text>
+      
+      <View style={{ width:200,height: 40, borderWidth:1.5,borderColor:"#797676"}}>
+      <Text style={styles.EmailText}>{route.params.email}</Text>
       </View>
+      </View>
+    <View style={styles.pwContainer}>
+      <Text style={styles.pw}>비밀번호  </Text>
+      <TextInput
+          secureTextEntry
+          style={{ width:200,height: 40, borderWidth:1.5,borderColor:"#797676"}}
+          onChangeText={text => onChangeText2(text)}
+          value2={value2}
+          />
+           <TouchableOpacity style={styles.check} onPress={()=>isPassword(value2)}>
+      <Text style={styles.checkbox}>확인</Text>
+    </TouchableOpacity>
+    </View>
 
-      <Text style={styles.pwt}>비밀번호는 8~16자로 영문, 숫자, 특수문자를 최소 한가지씩 조합해주세요:)</Text>
-      <TouchableOpacity style={styles.check} onPress={()=>isPassword(value2)}>
-        <Text style={styles.checkbox}>비밀번호 확인</Text>
-      </TouchableOpacity>
-      
-      <View style={styles.nicknameContainer}>
-        <Text style={styles.nickname}>닉네임</Text>  
-        <TextInput
-            style={{ width:220,height: 40, borderWidth:1.5,borderColor:"#797676"}}
-            onChangeText={text => onChangeText3(text)}
-            value3={value3}
-            />
-      </View>
+    <Text style={styles.pwt}>비밀번호는 8~16자로 영문, 숫자, 특수문자를 최소 한가지씩 조합해주세요:)</Text>
+   
+    <View style={styles.rpwContainer}>
+      <Text style={styles.rpw}>pw재확인</Text>
+      <TextInput
+          secureTextEntry
+          style={{ width:200,height: 40, borderWidth:1.5,borderColor:"#797676"}}
+          onChangeText={text => onChangeText1(text)}
+          value1={value1}
+          />
+    </View>
+    {/*<Text style={styles.ret}>{re}</Text>*/}
+    <View style={styles.nicknameContainer}>
+      <Text style={styles.nickname}>닉네임 </Text>  
+      <TextInput
+          style={{ width:200,height: 40, borderWidth:1.5,borderColor:"#797676"}}
+          onChangeText={text => onChangeText3(text)}
+          value3={value3}
+          />
+    </View>
       <TouchableOpacity style={styles.regiButton} onPress={() => alert("비밀번호를 확인해주세요!")}>
         <Text style={styles.regiButtonText}>가입하기</Text>
       </TouchableOpacity>
@@ -138,15 +230,15 @@ const styles = StyleSheet.create({
        color:"#D84315"
     },
     check:{
-      width:100,
+      width:50,
       height:30,
       borderColor:"#D84315",
       borderRadius:10,
       borderWidth:2,
       backgroundColor:"#fff",
       alignSelf:"flex-end",
-      marginRight:33,
-      marginTop:5
+      marginLeft:3,
+      marginBottom:3
     },
     title:{
       //폰트 사이즈
@@ -164,12 +256,12 @@ const styles = StyleSheet.create({
       flexDirection:"row",
       width:320,
       height:40,
-      marginLeft:30,
+      marginLeft:20,
       marginTop:30
     },
     id:{
         //폰트 사이즈
-      fontSize:18,
+      fontSize:15,
       //폰트 두께
       fontWeight:'600',
       //위 공간으로 부터 이격
@@ -183,12 +275,12 @@ const styles = StyleSheet.create({
       flexDirection:"row",
       width:320,
       height:40,
-      marginLeft:30,
+      marginLeft:20,
       marginTop:25
     },
     pw:{
         //폰트 사이즈
-        fontSize:18,
+        fontSize:15,
         //폰트 두께
         fontWeight:'600',
         //위 공간으로 부터 이격
@@ -198,6 +290,36 @@ const styles = StyleSheet.create({
         marginRight:15,
         textAlign:'left',
     },
+    rpwContainer:{
+      flexDirection:"row",
+      width:320,
+      height:40,
+      marginLeft:20,
+      marginTop:5
+    },
+    rpw:{
+        //폰트 사이즈
+        fontSize:15,
+        //폰트 두께
+        fontWeight:'600',
+        //위 공간으로 부터 이격
+        marginTop:10,
+        marginLeft:10,
+        //왼쪽 공간으로 부터 이격
+        marginRight:15,
+        textAlign:'left',
+    },
+    ret:{
+      //폰트 사이즈
+      fontSize:12,
+      //폰트 두께
+      fontWeight:'600',
+      //위 공간으로 부터 이격
+      marginTop:5,
+      textAlign:'right',
+      color:"#D84315",
+      marginRight:60
+  },
     pwt:{
       color:"#797676",
       //폰트 사이즈
@@ -213,12 +335,12 @@ const styles = StyleSheet.create({
       flexDirection:"row",
       width:320,
       height:40,
-      marginLeft:30,
+      marginLeft:20,
       marginTop:25
     },
     nickname:{
       //폰트 사이즈
-      fontSize:18,
+      fontSize:15,
       //폰트 두께
       fontWeight:'600',
       //위 공간으로 부터 이격
