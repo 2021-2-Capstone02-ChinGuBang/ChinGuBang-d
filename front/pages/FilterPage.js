@@ -239,8 +239,8 @@ let form = {
       monthly : monthly,
     },
     rentPeriod:{
-      startDate : date1.toLocaleDateString(),
-      endDate : (category=="양도" ? null : date2.toLocaleDateString()),
+      startDate : String(date1.getMonth()+1) +"/"+ String(date1.getDate()) +"/"+ String(date1.getFullYear()),
+      endDate : (category=="양도" ? null : String(date2.getMonth()+1) +"/"+ String(date2.getDate()) +"/"+ String(date2.getFullYear()))
     },
     options:{
       bed : options[0],

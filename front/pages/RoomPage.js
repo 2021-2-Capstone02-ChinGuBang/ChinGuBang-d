@@ -121,7 +121,7 @@ export default function RoomPage({navigation, route}) {
                     fontWeight:"700",
                     marginLeft:5,
                     marginTop:20,
-                }}>{room.data.type.rentType} {room.data.price.monthly}만원 / 보증금 {room.data.price.deposit}만원</Text>
+                }}>{room.data.type.rentType} {room.data.type.rentType=="전세" ? (room.data.price.deposit + "만원") : (room.data.price.monthly + "만원 / 보증금" + room.data.price.deposit + " 만원")}</Text>
             </View>
             <View style={styles.components}>
                 <Text style={styles.detailText} multiline={true}>{room.data.information.description}</Text>

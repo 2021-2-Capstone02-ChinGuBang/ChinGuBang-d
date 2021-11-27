@@ -64,7 +64,7 @@ export default function MyRoomCard({content, navigation,ut}) {
                                                                     Authorization:u_t,
                                                                 }
                                                               }).then(function(res){
-                                                                Alert.alert(res.message)
+                                                                //Alert.alert(res.message)
                                                                 console.log(res)
                                                                 console.log(u_t)
                                                               })

@@ -276,8 +276,8 @@ export default function EditRoom({navigation, route}) {
   form.append('information[address]',address)
   form.append('information[query]',query)
   form.append('information[description]',description)
-  form.append('rentPeriod[startDate]',date1.toLocaleDateString())
-  form.append('rentPeriod[endDate]',date2.toLocaleDateString())
+  form.append('rentPeriod[startDate]',String(date1.getMonth()+1) +"/"+ String(date1.getDate()) +"/"+ String(date1.getFullYear()))
+  form.append('rentPeriod[endDate]',String(date2.getMonth()+1) +"/"+ String(date2.getDate()) +"/"+ String(date2.getFullYear()))
   form.append('options[bed]',options[0])
   form.append('options[table]',options[1])
   form.append('options[refrigerator]',options[2])
@@ -766,7 +766,8 @@ export default function EditRoom({navigation, route}) {
           }
         })
         .then(function(res){
-          console.log(res)
+          //console.log(res)
+          //Alert.alert(String(date1.getMonth()+1) +"/"+ String(date1.getDate()) +"/"+ String(date1.getFullYear()))
           navigation.navigate('MainPage',{u_token : ut, rooms: res.data.data.rooms, newMsg: res.data.data.newMessageNum})
         })
         Alert.alert("방이 정상적으로 수정되었습니다.")

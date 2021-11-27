@@ -120,7 +120,7 @@ export default function PickRoomCard({content,navigation,ut}) {
                                                                 })
                                                                 .catch(function(res){
                                                                   console.log(ID)
-                                                                  Alert.alert(res.message)
+                                                                 // Alert.alert(res.message)
                                                                   console.log(res)
                                                                   console.log("u_t:",u_t)
                                                                 })}}>

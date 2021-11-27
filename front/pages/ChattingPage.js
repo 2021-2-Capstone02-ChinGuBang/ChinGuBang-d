@@ -61,7 +61,7 @@ useEffect(() => {
       setroom(route.params.content.data.room.photo.main)
 },[isFocused])
 
-  return (
+  return category=="단기임대"?(
    
     <View style={styles.container}>
 
@@ -107,7 +107,53 @@ useEffect(() => {
       <StatusBar style="auto" />
     </View>
    
-  );
+  ):(
+   
+    <View style={styles.container}>
+
+          <View style={styles.cardC}>
+                <View style={styles.c1}>
+                    <Image resizeMode={"cover"}
+                    style={styles.roomImage} source={{uri:room}}/>
+                </View>
+
+                <View style={styles.c2}>  
+                    <View style={styles.c3}>
+                        <View style={styles.kind}><Text style={styles.kindtext}>{category}</Text></View>
+                        <View style={styles.method}><Text style={styles.methodtext}>{roomType}</Text></View>
+
+                    </View>
+                    <View style={styles.c4}>
+                        <Text style={styles.ptext} numberOfLines={1}>{rentType} {monthly}만원/ 보증금 {deposit}만원</Text>
+                        <Text style={styles.dtext} numberOfLines={1}>{startDate}</Text>
+                        <Text style={styles.ftext} numberOfLines={1}>{area}평,{floor}층</Text>
+                    </View>
+                    <Text style={styles.utext} numberOfLines={1}>{createdAt}</Text>
+
+                </View>
+          </View>
+         
+
+        <View style={styles.chatC}>
+            <ScrollView>
+                {/* 하나의 카드 영역을 나타내는 View */}
+                {
+                chat.map((content,i)=>{
+                    return (<ChatCard content={content} key={i}/>)
+                })
+                }
+            </ScrollView>
+            <TouchableOpacity style={{position: 'absolute', right: 25, bottom: 70}} onPress={()=>{navigation.navigate('쪽지 보내기',{user_id:ut, roomID:roomID , rcID:opponentID})}}>
+                <Image resizeMode={"cover"}
+                          style={styles.sendImage} source={send}/>
+            </TouchableOpacity>
+        </View>
+        
+
+      <StatusBar style="auto" />
+    </View>
+   
+  )
 }
 
 const styles = StyleSheet.create({
